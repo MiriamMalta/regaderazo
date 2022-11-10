@@ -9,8 +9,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  bloc: ^8.1.0
+  flutter_bloc: ^8.1.1
+  # Widgets
   cupertino_icons: ^1.0.2
   syncfusion_flutter_charts: ^20.3.52
+  font_awesome_flutter: ^10.2.1
+  # Firebase
+  firebase_core: ^2.1.0
+  firebase_auth: ^4.0.2
+  cloud_firestore: ^4.0.2
+  firebase_ui_firestore: ^1.0.2
+  # Google
+  google_sign_in: ^5.4.2
+  share_plus: ^6.1.0
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
