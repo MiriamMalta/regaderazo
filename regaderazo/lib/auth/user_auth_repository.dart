@@ -20,6 +20,11 @@ class UserAuthRepository {
     await _auth.signOut();
   }
 
+  Future<void> signOutFull() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
+
   Future<void> signInWithGoogle() async {
     //Google sign in
     final googleUser = await _googleSignIn.signIn();
@@ -61,4 +66,6 @@ class UserAuthRepository {
       return;
     }
   }
+
+  signOut() {}
 }

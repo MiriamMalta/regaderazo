@@ -15,6 +15,8 @@ class UnAuthState extends AuthState {}
 
 class SignOutSuccessState extends AuthState {}
 
+class SignOutErrorState extends AuthState {}
+
 class AuthErrorState extends AuthState {}
 
 class AuthAwaitingState extends AuthState {}

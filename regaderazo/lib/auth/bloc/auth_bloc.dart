@@ -27,13 +27,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   FutureOr<void> _signOut(event, emit) async {
-    if (FirebaseAuth.instance.currentUser!.isAnonymous) {
-      await _authRepo.signOutFirebaseUser();
-    } else {
-      await _authRepo.signOutGoogleUser();
-      await _authRepo.signOutFirebaseUser();
+    try {
+      if (FirebaseAuth.instance.currentUser!.isAnonymous) {
+        await _authRepo.signOutFirebaseUser();
+      } else {
+        //await _authRepo.signOutGoogleUser();
+        //await _authRepo.signOutFirebaseUser();
+        await _authRepo.signOutFull();
+      }
+      emit(SignOutSuccessState());
+    } catch (e) {
+      emit(SignOutErrorState());
     }
-    emit(SignOutSuccessState());
+    
   }
 
   FutureOr<void> _authUser(event, emit) async {

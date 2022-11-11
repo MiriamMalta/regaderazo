@@ -22,7 +22,10 @@ class _LogInFormState extends State<LogInForm> {
   final Color _grey = ColorSelector.getDarkGrey();
   final AssetImage _logo = AssetImage('assets/regaderazo_sin.png');
 
-  
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  var iniciar = true;
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +65,7 @@ class _LogInFormState extends State<LogInForm> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
-          HaveAccount(
-            tertiaryColor: null,
-            secondaryColor: _grey,
-            text1: "",
-            text2: "¿Olvidaste tu contraseña?",
-            route: () {
-              print("Forgot password");
-            }
-          ),
+          _password(),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
@@ -81,21 +76,13 @@ class _LogInFormState extends State<LogInForm> {
               text_color: Colors.white,
               text: "Acceder",
               onPressed: () {
-                Navigator.pushNamed(context, '/home');
+                Navigator.pushNamed(context, '/report');
               }
             ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
-          HaveAccount(
-            tertiaryColor: _grey,
-            secondaryColor: _red,
-            text1: "¿No tienes cuenta?  ",
-            text2: "Regístrate",
-            route: () {
-              Navigator.pushNamed(context, '/sign_up');
-            }
-          ),
+          _reg_or_inic(),
           OrLine(tertiaryColor: _grey, context: context),
           SocialLog(
             logo: _blue,
@@ -154,5 +141,51 @@ class _LogInFormState extends State<LogInForm> {
         ),
       ),
     );
+  }
+
+  Widget _password () {
+    if (iniciar == true) {
+      return HaveAccount(
+        tertiaryColor: null,
+        secondaryColor: _grey,
+        text1: "",
+        text2: "¿Olvidaste tu contraseña?",
+        route: () {
+          print("Forgot password");
+        }
+      );
+    }
+    else {
+      return Container();
+    }
+  }
+
+  Widget _reg_or_inic () {
+    if (iniciar == true) {
+      return HaveAccount(
+        tertiaryColor: _grey,
+        secondaryColor: _red,
+        text1: "¿No tienes cuenta?  ",
+        text2: "Regístrate",
+        route: () {
+          setState(() {
+            iniciar = false;
+          });
+        }
+      );
+    }
+    else {
+      return HaveAccount(
+        tertiaryColor: _grey,
+        secondaryColor: _red,
+        text1: "¿Ya tienes cuenta?  ",
+        text2: "Iniciar sesión",
+        route: () {
+          setState(() {
+            iniciar = true;
+          });
+        }
+      );
+    }
   }
 }
