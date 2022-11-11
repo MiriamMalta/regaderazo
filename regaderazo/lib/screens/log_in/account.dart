@@ -11,7 +11,7 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  final Color _primaryColor = ColorSelector.getRed();
+  final Color _primaryColor = ColorSelector.getRRed();
   final Color _secondaryColor = ColorSelector.getDarkBlue();
   final Color _tertiaryColor = ColorSelector.getLightBlue();
   final Color _quaternaryColor = ColorSelector.getDarkPink();

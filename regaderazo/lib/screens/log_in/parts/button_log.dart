@@ -29,7 +29,7 @@ class ButtonLog extends StatelessWidget {
         //vertical: 5
         horizontal: 20
       ),
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width * 0.9,
       height: 48,
       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.025),
       child: TextButton(

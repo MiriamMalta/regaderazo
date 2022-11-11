@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 class ColorSelector {
   // Colors
   
-  static const _RED = Color.fromRGBO(248, 95, 106, 1); // #F85F6A
-  static Color getRed() {
-    return _RED;
+  static const _REGADERAZO_RED = Color.fromRGBO(248, 95, 106, 1); // #F85F6A
+  static Color getRRed() {
+    return _REGADERAZO_RED;
+  }
+
+  static const _REGADERAZO_BLUE = Color.fromRGBO(82, 200, 250, 1); // #52C8FA
+  static Color getRBlue() {
+    return _REGADERAZO_BLUE;
   }
 
   static const _BLACK = Color.fromRGBO(0, 0, 0, 1); //#000000

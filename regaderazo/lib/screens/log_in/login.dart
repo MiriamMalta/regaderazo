@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../auth/bloc/auth_bloc.dart';
 import '../../config/colors.dart';
 import 'parts/button_log.dart';
 import 'parts/have_account.dart';
@@ -15,11 +17,12 @@ class LogInForm extends StatefulWidget {
 }
 
 class _LogInFormState extends State<LogInForm> {
-  final Color _primaryColor = ColorSelector.getRed();
-  final Color _secondaryColor = ColorSelector.getDarkBlue();
-  final Color _tertiaryColor = ColorSelector.getLightBlue();
-  final Color _quaternaryColor = ColorSelector.getDarkPink();
+  final Color _blue = ColorSelector.getRBlue();
+  final Color _red = ColorSelector.getRRed();
+  final Color _grey = ColorSelector.getDarkGrey();
   final AssetImage _logo = AssetImage('assets/regaderazo_sin.png');
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -35,78 +38,120 @@ class _LogInFormState extends State<LogInForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.05,
-          ),
-          Image(image: _logo, height: MediaQuery.of(context).size.height * 0.15),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.04,
+          _image(),
+          _title(),
+          _subtitle(),
+          LogText(
+            context: context,
+            secondaryColor: _blue,
+            icon: Icons.person_outlined,
+            text: "Ingresa tu e-mail",
+            onChanged: (value) {},
+            tailIcon: null,
+            obscure: false
           ),
           LogText(
-              context: context,
-              tertiaryColor: _quaternaryColor,
-              secondaryColor: _secondaryColor,
-              icon: Icons.person_outlined,
-              text: "Ingresa tu e-mail",
-              onChanged: (value) {},
-              tailIcon: null,
-              obscure: false),
-          LogText(
-              context: context,
-              tertiaryColor: _quaternaryColor,
-              secondaryColor: _secondaryColor,
-              icon: Icons.lock_outline,
-              text: "Ingresa tu password",
-              onChanged: (value) {},
-              tailIcon: Icons.visibility,
-              obscure: true),
+            context: context,
+            secondaryColor: _blue,
+            icon: Icons.lock_outline,
+            text: "Ingresa tu password",
+            onChanged: (value) {},
+            tailIcon: Icons.visibility,
+            obscure: true
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
           HaveAccount(
-              tertiaryColor: null,
-              secondaryColor: _secondaryColor,
-              text1: "",
-              text2: "¿Olvidaste tu contraseña?",
-              route: () {
-                print("Forgot password");
-              }),
+            tertiaryColor: null,
+            secondaryColor: _grey,
+            text1: "",
+            text2: "¿Olvidaste tu contraseña?",
+            route: () {
+              print("Forgot password");
+            }
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
           ButtonLog(
               context: context,
-              background: _secondaryColor,
-              splash: _primaryColor,
+              background: _red,
+              splash: _blue,
               text_color: Colors.white,
               text: "Acceder",
               onPressed: () {
                 Navigator.pushNamed(context, '/home');
-              }),
+              }
+            ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
           HaveAccount(
-              tertiaryColor: _tertiaryColor,
-              secondaryColor: _secondaryColor,
-              text1: "¿No tienes cuenta?  ",
-              text2: "Regístrate",
-              route: () {
-                Navigator.pushNamed(context, '/sign_up');
-              }),
-          OrLine(tertiaryColor: _tertiaryColor, context: context),
+            tertiaryColor: _grey,
+            secondaryColor: _red,
+            text1: "¿No tienes cuenta?  ",
+            text2: "Regístrate",
+            route: () {
+              Navigator.pushNamed(context, '/sign_up');
+            }
+          ),
+          OrLine(tertiaryColor: _grey, context: context),
           SocialLog(
-              logo: _tertiaryColor,
-              splash: _primaryColor,
-              action: () {
-                /* BlocProvider.of<AuthBloc>(context).add(
-                  GoogleAuthEvent(
-                    buildcontext: context,
-                  ),
-                ); */
-                print("HI");
-              }),
+            logo: _blue,
+            splash: _blue,
+            action: () {
+              BlocProvider.of<AuthBloc>(context).add(GoogleAuthEvent());
+            }
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _image () {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * 0.06,
+        bottom: MediaQuery.of(context).size.height * 0.04
+      ),
+      child: Image(
+        image: _logo, 
+        height: MediaQuery.of(context).size.height * 0.2
+      ),
+    );
+  }
+
+  Widget _title () {
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.1,
+        bottom: MediaQuery.of(context).size.width * 0.05,
+      ),
+      child: Text(
+        "Iniciar sesión",
+        style: TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _subtitle () {
+    return Container(
+      alignment: Alignment.topLeft,
+      padding: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.1,
+        bottom: MediaQuery.of(context).size.width * 0.05,
+      ),
+      child: Text(
+        "Hola! Favor de ingresar tu cuenta",
+        style: TextStyle(
+          fontSize: 16,
+          color: _grey,
+        ),
       ),
     );
   }

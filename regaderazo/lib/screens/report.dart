@@ -44,7 +44,7 @@ class _ReportState extends State<Report> {
                     IconButton(
                       onPressed: (){print("Home");}, 
                       icon: Icon(Icons.home), 
-                      color: ColorSelector.getRed(),
+                      color: ColorSelector.getRRed(),
                     ),
                   ],
                 ),

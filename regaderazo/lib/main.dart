@@ -1,24 +1,56 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'screens/account.dart';
-import 'screens/home_page.dart';
+import 'auth/bloc/auth_bloc.dart';
+import 'screens/log_in/login.dart';
 import 'screens/report.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc()..add(VerifyAuthEvent()),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
-      home: Report(),
-      routes: {
-        '/report': (context) => Report(),
-        '/home': (context) => const HomePage(),
-        '/account': (context) => const Account(),
-      },
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.purple,
+        ),
+      ),
+      home: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Favor de autenticarse"),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthSuccessState) {
+            return Report();
+          } else if (state is UnAuthState ||
+              state is AuthErrorState ||
+              state is SignOutSuccessState) {
+            return LogInForm();
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
     );
   }
 }

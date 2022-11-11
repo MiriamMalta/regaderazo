@@ -41,7 +41,7 @@ class _AccountState extends State<Account> {
                     IconButton(
                       onPressed: (){print("Home");}, 
                       icon: Icon(Icons.home), 
-                      color: ColorSelector.getRed(),
+                      color: ColorSelector.getRRed(),
                     ),
                   ],
                 ),

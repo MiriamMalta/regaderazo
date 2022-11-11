@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../auth/bloc/auth_bloc.dart';
 import '../../config/colors.dart';
 
 class SideBar extends StatefulWidget {
@@ -86,6 +88,13 @@ class _SideBarState extends State<SideBar> {
               leading: Icon(Icons.auto_graph),
               title: Text('Más números'),
               onTap: () => {Navigator.of(context).pop()},
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Salir de cuenta'),
+              onTap: () => {
+                BlocProvider.of<AuthBloc>(context).add(SignOutEvent())
+              },
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.35,

@@ -16,7 +16,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final Color _primaryColor = ColorSelector.getRed();
+  final Color _primaryColor = ColorSelector.getRRed();
   final Color _secondaryColor = ColorSelector.getDarkBlue();
   final Color _tertiaryColor = ColorSelector.getLightBlue();
   final Color _quaternaryColor = ColorSelector.getDarkPink();
@@ -48,7 +48,6 @@ class _SignUpState extends State<SignUp> {
           ),
           LogText(
               context: context,
-              tertiaryColor: _quaternaryColor,
               secondaryColor: _secondaryColor,
               icon: Icons.person_outlined,
               text: "Ingresa tu e-mail",
@@ -57,7 +56,6 @@ class _SignUpState extends State<SignUp> {
               obscure: false),
           LogText(
               context: context,
-              tertiaryColor: _quaternaryColor,
               secondaryColor: _secondaryColor,
               icon: Icons.lock_outline,
               text: "Ingresa tu password",
