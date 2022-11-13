@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import '../config/colors.dart';
 
-class PiedadData {
-  static const String _name = 'Piedad Vives';
+class LeonorData {
+  static const String _name = 'Leonor Vives-Amado';
   String getName() => _name;
 
-  Color temp = ColorSelector.getPurple();
+  Color temp = ColorSelector.getDarkBlue();
   Color getColor() => temp;
 
   final List<Map<String, dynamic>> _temperature = [
@@ -16,7 +16,7 @@ class PiedadData {
     {'day': 'Juev', 'temperature': 37.0,},
     {'day': 'Vier', 'temperature': 39.0,},
     {'day': 'Sáb', 'temperature': 37.0,},
-    {'day': 'Dom', 'temperature': 38.0,},
+    {'day': 'Dom', 'temperature': 40.0,},
   ];
   // return temperature data
   List<Map<String, dynamic>> getTemperature() {

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../config/colors.dart';
 
 class ClementeData {
-  static const String name = 'Clemente';
+  static const String _name = 'Clemente Vives-Amado';
+  String getName() => _name;
+
   Color temp = ColorSelector.getDarkPink();
+  Color getColor() => temp;
 
   final List<Map<String, dynamic>> _temperature = [
     {'day': 'Lun', 'temperature': 35.0,},
@@ -13,7 +16,7 @@ class ClementeData {
     {'day': 'Juev', 'temperature': 37.0,},
     {'day': 'Vier', 'temperature': 39.0,},
     {'day': 'Sáb', 'temperature': 37.0,},
-    {'day': 'Dom', 'temperature': 38.0,},
+    {'day': 'Dom', 'temperature': 35.0,},
   ];
   // return temperature data
   List<Map<String, dynamic>> getTemperature() {

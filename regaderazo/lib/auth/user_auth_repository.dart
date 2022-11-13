@@ -3,8 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserAuthRepository {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ["email"]);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ["email", "profile"]);
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static FirebaseAuth? userInstance = null;
+
+  UserAuthRepository() {
+    userInstance = _auth;
+  }
+
+  FirebaseAuth getInstance() {
+    return _auth;
+  }
+
+  String? getuid() {
+    print('\x1B[32mcurrent user: ${_auth.currentUser}');
+    return _auth.currentUser?.uid;
+  }
 
   // true -> go home page
   // false -> go login page
@@ -42,13 +57,15 @@ class UserAuthRepository {
     // firebase sign in con credenciales de Google
     final authResult = await _auth.signInWithCredential(credential);
 
-    // Extraer token**
-    // User user = authResult.user!;
-    // final firebaseToken = await user.getIdToken();
-    // print("user fcm token:${firebaseToken}");
+    final user = authResult.user;
 
-    // crear tabla user en firebase cloudFirestore y agregar valor fotoListId []
-    await _createUserCollectionFirebase(_auth.currentUser!.uid);
+    if (user != null) {
+      final User? currentUser = _auth.currentUser;
+      assert(user.uid == currentUser!.uid);
+
+      // crear tabla user en firebase cloudFirestore y agregar valor profiles []
+      await _createUserCollectionFirebase(_auth.currentUser!.uid);
+    }
   }
 
   Future<void> _createUserCollectionFirebase(String uid) async {

@@ -15,6 +15,7 @@ dependencies:
   cupertino_icons:
   syncfusion_flutter_charts:
   font_awesome_flutter:
+  sleek_circular_slider:
   # Firebase
   firebase_core: 
   firebase_auth: 

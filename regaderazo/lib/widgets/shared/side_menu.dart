@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../auth/bloc/auth_bloc.dart';
 import '../../config/colors.dart';
+import '../../screens/account.dart';
+import '../../screens/home_page.dart';
+import '../../screens/numbers.dart';
+import '../../screens/report.dart';
 
 class SideBar extends StatefulWidget {
   const SideBar({super.key});
@@ -12,6 +16,43 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
+  int _currentPageIndex = 0;
+  final _pagesNameList = [
+    "Inicio",
+    "Reporte",
+    "Cuentas",
+    "Más números",
+  ];
+  final _iconsList = [
+    Icons.home,
+    Icons.analytics,
+    Icons.account_box,
+    Icons.auto_graph,
+  ];
+  List<StatefulWidget> _pagesList = [
+    HomePage(),
+    Report(),
+    Account(),
+    Numbers(),
+  ];
+  List<Widget> _pages = [
+    HomePage(),
+    Report(),
+    Account(),
+    Numbers(),
+  ]; 
+
+  static const HOME = '/home';
+  static const REPORT = '/report';
+  static const ACCOUNT = '/account';
+  static const NUMBERS = '/numbers';
+  static final _pages2 = {
+    HOME: (context) => HomePage(),
+    REPORT: (context) => Report(),
+    ACCOUNT: (context) => Account(),
+    NUMBERS: (context) => Numbers(),
+  };
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +104,37 @@ class _SideBarState extends State<SideBar> {
                 ),
               ),
             ),
-            ListTile(
+            Container(
+              child: Column(
+                children: [
+                  for (int i = 0; i < _pagesNameList.length; i++)
+                    ListTile(
+                      leading: Icon(
+                        _iconsList[i],
+                      ),
+                      title: Text(
+                        _pagesNameList[i],
+                      ),
+                      onTap: () {
+                        // setState(() {
+                        //   _currentPageIndex = i;
+                        // });
+                        // go to the page
+                        /* Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => _pagesList[i],
+                          ),
+                        ); */
+                        Navigator.pushNamed(context, _pages2.keys.toList()[i]);
+                        Navigator.pop(context);
+                        //Navigator.of(context).pop();
+                      },
+                    ),
+                ],
+              ),
+            ),
+            /* ListTile(
               leading: Icon(Icons.home),
               title: Text('Inicio'),
               onTap: () => {
@@ -83,12 +154,14 @@ class _SideBarState extends State<SideBar> {
               onTap: () => {
                 Navigator.pushNamed(context, '/account'),
               },
-            ),
+            ), 
             ListTile(
               leading: Icon(Icons.auto_graph),
               title: Text('Más números'),
-              onTap: () => {Navigator.of(context).pop()},
-            ),
+              onTap: () => {
+                Navigator.of(context).pop()
+              },
+            ),*/
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Salir de cuenta'),
@@ -97,12 +170,14 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35,
+              height: MediaQuery.of(context).size.height * 0.3,
             ),
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Configuración'),
-              onTap: () => {Navigator.of(context).pop()},
+              onTap: () => {
+                Navigator.of(context).pop()
+              },
             ),
           ],
         ),

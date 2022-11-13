@@ -20,6 +20,7 @@ class _AccountState extends State<Account> {
   final double temp = PiedadData().getTemperature().last['temperature'];
   final List<Map<String, dynamic>> data_1 = PiedadData().getTemperature();
   final List<Map<String, dynamic>> data_2 = PiedadData().getDay();
+  final List<Map<String, dynamic>> data_3 = PiedadData().getMonth();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,9 @@ class _AccountState extends State<Account> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: (){print("Home");}, 
+                      onPressed: (){
+                        print("Home");
+                      }, 
                       icon: Icon(Icons.home), 
                       color: ColorSelector.getRRed(),
                     ),
@@ -69,23 +72,35 @@ class _AccountState extends State<Account> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.3,
                       alignment: Alignment.center,
-                      child: Text('Regaderazo')
+                      child: Text('Temperatura')
                     ),
                   ],
                 ),
                 Division(),
-                Text(
-                  "Temperatura",
-                  style: TextStyle(
-                    fontSize: 18,
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.05,
+                    bottom: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  child: Text(
+                    "Temperatura",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-                Text(
-                  "${temp}",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: ColorSelector.getPurple(),
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.01,
+                    bottom: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  child: Text(
+                    "${temp}ºC",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: ColorSelector.getPurple(),
+                    ),
                   ),
                 ),
                 ColumnChart(
@@ -106,8 +121,8 @@ class _AccountState extends State<Account> {
                   ],
                 ),
                 Division(),
-                SplineArea(data: _getSplineChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
-                SplineArea(data: _getSplineChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
+                SplineArea(data: _getDayChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
+                SplineArea(data: _getMonthChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
               ],
             ),
           ),
@@ -124,10 +139,18 @@ class _AccountState extends State<Account> {
     return list;
   }
 
-  _getSplineChart () {
+  _getDayChart () {
     List<SplineAreaData> list = [];
     for(var i = 0; i < data_2.length; i++) {
       list.add(SplineAreaData(data_2[i]['day'], data_2[i]['saving'], data_2[i]['total']));
+    }
+    return list;
+  }
+
+  _getMonthChart () {
+    List<SplineAreaData> list = [];
+    for(var i = data_3.length - 6; i < data_3.length; i++) {
+      list.add(SplineAreaData(data_3[i]['month'], data_3[i]['saving'], data_3[i]['total']));
     }
     return list;
   }

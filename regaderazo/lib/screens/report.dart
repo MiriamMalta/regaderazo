@@ -30,7 +30,7 @@ class _ReportState extends State<Report> {
       drawer: SideBar(
         //sideMenuColor: _primaryColor,
       ),
-      body: Center(
+      body: Container(
         child: Padding(
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).size.width * 0.1,
@@ -42,7 +42,9 @@ class _ReportState extends State<Report> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: (){print("Home");}, 
+                      onPressed: (){
+                        print("Home");
+                      }, 
                       icon: Icon(Icons.home), 
                       color: ColorSelector.getRRed(),
                     ),
@@ -63,7 +65,6 @@ class _ReportState extends State<Report> {
                     ),
                   ],
                 ),
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -78,18 +79,30 @@ class _ReportState extends State<Report> {
                   ],
                 ),
                 Division(),
-                Text(
-                  "Temperatura",
-                  style: TextStyle(
-                    fontSize: 18,
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.05,
+                    bottom: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  child: Text(
+                    "Temperatura",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-                Text(
-                  "${temp}",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: ColorSelector.getPurple(),
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.01,
+                    bottom: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  child: Text(
+                    "${temp}ºC",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: ColorSelector.getPurple(),
+                    ),
                   ),
                 ),
                 ColumnChart(
