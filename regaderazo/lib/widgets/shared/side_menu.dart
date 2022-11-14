@@ -120,12 +120,12 @@ class _SideBarState extends State<SideBar> {
                         //   _currentPageIndex = i;
                         // });
                         // go to the page
-                        /* Navigator.push(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => _pagesList[i],
                           ),
-                        ); */
+                        );
                         Navigator.pushNamed(context, _pages2.keys.toList()[i]);
                         Navigator.pop(context);
                         //Navigator.of(context).pop();

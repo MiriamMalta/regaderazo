@@ -6,7 +6,7 @@ class ClementeData {
   static const String _name = 'Clemente Vives-Amado';
   String getName() => _name;
 
-  Color temp = ColorSelector.getDarkPink();
+  Color temp = ColorSelector.getLightBlue();
   Color getColor() => temp;
 
   final List<Map<String, dynamic>> _temperature = [

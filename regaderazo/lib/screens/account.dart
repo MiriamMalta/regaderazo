@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../config/colors.dart';
+import '../data/clemente.dart';
+import '../data/leonor.dart';
+import '../data/pedro.dart';
 import '../data/piedad.dart';
-import '../models/slean.dart';
 import '../models/temperature.dart';
 import '../widgets/reusable/column_chart.dart';
 import '../widgets/reusable/division.dart';
-import '../widgets/reusable/spline_area.dart';
 import '../widgets/shared/side_menu.dart';
 
 class Account extends StatefulWidget {
@@ -17,10 +18,40 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  final double temp = PiedadData().getTemperature().last['temperature'];
-  final List<Map<String, dynamic>> data_1 = PiedadData().getTemperature();
-  final List<Map<String, dynamic>> data_2 = PiedadData().getDay();
-  final List<Map<String, dynamic>> data_3 = PiedadData().getMonth();
+  List<Map<String, dynamic>> _profiles = [
+    {
+      "name": PiedadData().getName(),
+      "color": PiedadData().getColor(),
+      "temperature": PiedadData().getTemperature().last['temperature'],
+      "temp_data": PiedadData().getTemperature(),
+      "day_data": PiedadData().getDay(),
+      "month_data": PiedadData().getMonth(),
+    },
+    {
+      "name": ClementeData().getName(),
+      "color": ClementeData().getColor(),
+      "temperature": ClementeData().getTemperature().last['temperature'],
+      "temp_data": ClementeData().getTemperature(),
+      "day_data": ClementeData().getDay(),
+      "month_data": ClementeData().getMonth(),
+    },
+    {
+      "name": LeonorData().getName(),
+      "color": LeonorData().getColor(),
+      "temperature": LeonorData().getTemperature().last['temperature'],
+      "temp_data": LeonorData().getTemperature(),
+      "day_data": LeonorData().getDay(),
+      "month_data": LeonorData().getMonth(),
+    },
+    {
+      "name": PedroData().getName(),
+      "color": PedroData().getColor(),
+      "temperature": PedroData().getTemperature().last['temperature'],
+      "temp_data": PedroData().getTemperature(),
+      "day_data": PedroData().getDay(),
+      "month_data": PedroData().getMonth(),
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +59,7 @@ class _AccountState extends State<Account> {
       drawer: SideBar(
         //sideMenuColor: _primaryColor,
       ),
-      body: Center(
+      body: Container(
         child: Padding(
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).size.width * 0.1,
@@ -55,7 +86,7 @@ class _AccountState extends State<Account> {
                       width: MediaQuery.of(context).size.width * 0.05,
                     ),
                     Text(
-                      'Reporte', 
+                      'Cuentas', 
                       style: TextStyle(
                         fontSize: 30, 
                         fontWeight: FontWeight.bold
@@ -72,7 +103,7 @@ class _AccountState extends State<Account> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.3,
                       alignment: Alignment.center,
-                      child: Text('Temperatura')
+                      child: Text('Mis Cuentas')
                     ),
                   ],
                 ),
@@ -80,49 +111,15 @@ class _AccountState extends State<Account> {
                 Container(
                   padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.width * 0.05,
-                    bottom: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  child: Text(
-                    "Temperatura",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width * 0.01,
                     bottom: MediaQuery.of(context).size.width * 0.05,
                   ),
-                  child: Text(
-                    "${temp}ºC",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: ColorSelector.getPurple(),
-                    ),
+                  child: Column(
+                    children: [
+                      for (int i = 0; i < _profiles.length; i++)
+                      _buildProfile(_profiles[i]),
+                    ]
                   ),
                 ),
-                ColumnChart(
-                  data: _getTempChart(),
-                  color: ColorSelector.getPurple()
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.65,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      alignment: Alignment.center,
-                      child: Text('Ahorro de Agua')
-                    ),
-                  ],
-                ),
-                Division(),
-                SplineArea(data: _getDayChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
-                SplineArea(data: _getMonthChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
               ],
             ),
           ),
@@ -131,26 +128,57 @@ class _AccountState extends State<Account> {
     );
   }
 
-  _getTempChart () {
+  Widget _buildProfile (Map<String, dynamic> profile) {
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.width * 0.05,
+      ),
+      child: Column(
+        children: [
+          Text(
+            "${profile['name']}",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Última temperatura: ",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                "${profile['temperature']}ºC",
+                style: TextStyle(
+                  color: profile['color'],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18
+                ),
+              ),
+            ],
+          ),
+          Text("Tabla de temperaturas"),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: ColumnChart(
+              data: _getTempChart(profile['temp_data']),
+              color: profile['color'],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _getTempChart (List<Map<String, dynamic>> data ) {
     List<TemperatureChart> list = [];
-    for(var i = 0; i < data_1.length; i++) {
-      list.add(TemperatureChart(data_1[i]['day'], data_1[i]['temperature']));
-    }
-    return list;
-  }
-
-  _getDayChart () {
-    List<SplineAreaData> list = [];
-    for(var i = 0; i < data_2.length; i++) {
-      list.add(SplineAreaData(data_2[i]['day'], data_2[i]['saving'], data_2[i]['total']));
-    }
-    return list;
-  }
-
-  _getMonthChart () {
-    List<SplineAreaData> list = [];
-    for(var i = data_3.length - 6; i < data_3.length; i++) {
-      list.add(SplineAreaData(data_3[i]['month'], data_3[i]['saving'], data_3[i]['total']));
+    for(var i = 0; i < data.length; i++) {
+      list.add(TemperatureChart(data[i]['day'], data[i]['temperature']));
     }
     return list;
   }

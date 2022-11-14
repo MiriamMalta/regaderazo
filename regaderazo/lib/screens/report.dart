@@ -123,6 +123,9 @@ class _ReportState extends State<Report> {
                   ],
                 ),
                 Division(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.05,
+                ),
                 SplineArea(data: _getDayChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
                 SplineArea(data: _getMonthChart(), colorA: ColorSelector.getLightBlue(), colorB: ColorSelector.getPink()),
               ],
@@ -143,7 +146,7 @@ class _ReportState extends State<Report> {
 
   _getDayChart () {
     List<SplineAreaData> list = [];
-    for(var i = 0; i < data_2.length; i++) {
+    for(var i = data_2.length - 7; i < data_2.length; i++) {
       list.add(SplineAreaData(data_2[i]['day'], data_2[i]['saving'], data_2[i]['total']));
     }
     return list;
