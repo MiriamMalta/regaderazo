@@ -11,6 +11,7 @@ import '../models/temperature.dart';
 import '../widgets/reusable/column_chart.dart';
 import '../widgets/reusable/division.dart';
 import '../widgets/shared/side_menu.dart';
+import 'home_page.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -20,6 +21,11 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  TextEditingController _controller = TextEditingController();
+  void _clearText() {
+    _controller.clear();
+  }
+
   List<Map<String, dynamic>> _profiles = [
     {
       "name": PiedadData().getName(),
@@ -77,6 +83,7 @@ class _AccountState extends State<Account> {
                         IconButton(
                           onPressed: (){
                             print("Home");
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                           }, 
                           icon: Icon(Icons.home), 
                           color: ColorSelector.getRRed(),
@@ -140,7 +147,7 @@ class _AccountState extends State<Account> {
                 backgroundColor: Colors.green,
                 splashColor: Colors.greenAccent,
                 onPressed: () {
-                  //BlocProvider.of<UsersBloc>(context).add(UsersEventAddTo(profiles: _profiles));
+                  _showDialog ();
                 },
                 child: Icon(
                   //Icons.photo_camera_outlined,
@@ -213,5 +220,46 @@ class _AccountState extends State<Account> {
       list.add(TemperatureChart(data[i]['day'], data[i]['temperature']));
     }
     return list;
+  }
+
+  _showDialog () {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Agregar cuenta"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("¿Desea agregar una nueva cuenta?"),
+              TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: "Nombre de la cuenta",
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                _clearText;
+                Navigator.of(context).pop();
+              }, 
+              child: Text("Cancelar")
+            ),
+            TextButton(
+              onPressed: () {
+                print(_controller.text);
+                BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text));
+                _clearText;
+                Navigator.of(context).pop();
+              }, 
+              child: Text("Aceptar")
+            ),
+          ],
+        );
+      }
+    );
   }
 }

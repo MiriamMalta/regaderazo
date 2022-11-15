@@ -1,9 +1,13 @@
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:regaderazo/bloc/bloc/users_bloc.dart';
 import 'package:regaderazo/data/leonor.dart';
 import 'package:regaderazo/data/pedro.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
+import '../auth/user_auth_repository.dart';
 import '../config/colors.dart';
 import '../data/clemente.dart';
 import '../data/piedad.dart';
@@ -21,59 +25,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var slider = false;
-  var general_index = 0;
+  var general_index = -1;
   var queue = Queue<int>.from([0]); 
+  var temp = null;
 
-  List<Map<String, dynamic>> _profiles = [
-    {
-      "name": PiedadData().getName(),
-      "color": PiedadData().getColor(),
-      "select": false,
-      "data": PiedadData().getTemperature().last['temperature'],
-    },
-    {
-      "name": ClementeData().getName(),
-      "color": ClementeData().getColor(),
-      "select": false,
-      "data": ClementeData().getTemperature().last['temperature'],
-    },
-    {
-      "name": LeonorData().getName(),
-      "color": LeonorData().getColor(),
-      "select": false,
-      "data": LeonorData().getTemperature().last['temperature'],
-    },
-    {
-      "name": PedroData().getName(),
-      "color": PedroData().getColor(),
-      "select": false,
-      "data": PedroData().getTemperature().last['temperature'],
-    },
-    {
-      "name": PiedadData().getName(),
-      "color": PiedadData().getColor(),
-      "select": false,
-      "data": PiedadData().getTemperature().last['temperature'],
-    },
-    {
-      "name": ClementeData().getName(),
-      "color": ClementeData().getColor(),
-      "select": false,
-      "data": ClementeData().getTemperature().last['temperature'],
-    },
-    {
-      "name": LeonorData().getName(),
-      "color": LeonorData().getColor(),
-      "select": false,
-      "data": LeonorData().getTemperature().last['temperature'],
-    },
-    {
-      "name": PedroData().getName(),
-      "color": PedroData().getColor(),
-      "select": false,
-      "data": PedroData().getTemperature().last['temperature'],
-    },
-  ];
+  List<dynamic> _profiles = [];
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +51,7 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       onPressed: (){
                         print("Home");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                       }, 
                       icon: Icon(Icons.home), 
                       color: ColorSelector.getRRed(),
@@ -137,16 +94,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   height: MediaQuery.of(context).size.width * 0.6,
                   child: SingleChildScrollView(
-                    child: Column(        
-                      children: [
-                        for (int i = 0; i < _profiles.length; i++)
-                          _character(
-                            _profiles[i]['name'],
-                            _profiles[i]['color'],
-                            i,
-                          ),
-                      ],
-                    ),
+                    child: _listProfiles(),
                   ),
                 ),
                 Row(
@@ -196,11 +144,10 @@ class _HomePageState extends State<HomePage> {
                 ) */
                 Container(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.width * 0.65,
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: (){
-                      print("display");
                       setState(() {
                         slider = !slider;
                       });
@@ -208,6 +155,19 @@ class _HomePageState extends State<HomePage> {
                     child: _slider2 ()
                   ),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    print("temp: $temp");
+                    if (general_index < 0) {
+                      ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(content: Text('No has seleccionado un perfil')),
+                      );
+                    }
+                  }, 
+                  child: Text("Iniciar regadera")
+                  )
               ],
             ),
           ),
@@ -216,7 +176,81 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _character(String name, Color color, int index) {
+  /* BlocConsumer<UsersBloc, UsersState> _listProfiles() {
+    return BlocConsumer<UsersBloc, UsersState>(
+      listener: (context, state) {
+        if (state is UsersErrorState) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+        }
+      },
+      builder: (context, state) {
+        if (state is UsersLoadingState) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is UsersAddState) {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: state.profiles.length,
+            itemBuilder: (context, index) {
+              return _character(
+                state.profiles[index].name,
+                state.profiles[index].color,
+                index,
+              );
+            },
+          );
+        } else {
+          return Center(child: Text('No hay usuarios'));
+        }
+      },
+    );
+  } */
+
+  _listProfiles() {
+    CollectionReference user = FirebaseFirestore.instance.collection('profile');
+    return FutureBuilder<DocumentSnapshot>(
+      future: user.doc(UserAuthRepository().getuid()).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+            _profiles = data!['profiles'];
+            for (int i = 0; i < _profiles.length; i++) 
+              _profiles[i]['select'] = false;
+            if (data != null) return _listProfiles2(data);
+          }
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Widget _listProfiles2(Map<String, dynamic> data) {
+    return Column(        
+      children: [
+        for (int i = 0; i < _profiles.length; i++)
+          _character(
+            _profiles[i],
+            i,
+          ),
+        // get from firebase
+        /* for (int i = 0; i < data['profiles'].length; i++)
+          _character(
+            data['profiles'][i],
+            i + _profiles.length,
+          ), */
+      ],
+    );
+  }
+
+  Widget _character(Map<String, dynamic> profile, int index) {
     return GestureDetector(
       onTap: (){
         setState(() {
@@ -243,20 +277,33 @@ class _HomePageState extends State<HomePage> {
         ),
         width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
-          color: _profiles[index]['select'] == false ? ColorSelector.getGreyish() : ColorSelector.getPink(),
+          color: profile['select'] == false ? ColorSelector.getGreyish() : ColorSelector.getPink(),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(
-          "$name",
+          "${profile['name']}",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: color
+            color: _getColorFromHex(profile['color']),
           ),
         ),
       ),
     );
+  }
+
+  Color _getColorFromHex(String hexColor) {
+    hexColor = hexColor.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    if (hexColor.length == 8) {
+      return Color(int.parse("0x$hexColor"));
+    }
+    else {
+      return Colors.black;
+    }
   }
 
   Widget _slider () {
@@ -307,10 +354,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _slider2 () {
+    var initial;
+    if (general_index >= 0) {
+      initial = _profiles[general_index]["data"];
+      if (initial == null) initial = 0.0;
+      temp = initial;
+    }
+    else {
+      initial = 0.0;
+    } 
     return SleekCircularSlider(
       min: -10.0,
       max: 50.0,
-      initialValue: _profiles[general_index]["data"],
+      initialValue: initial,
       appearance: CircularSliderAppearance(
         angleRange: 360,
         startAngle: 180,
@@ -321,6 +377,7 @@ class _HomePageState extends State<HomePage> {
       }, */
       onChangeEnd: (double value) {
         print(value);
+        temp = value;
       },
       innerWidget: (double value) {
         return Container(

@@ -8,6 +8,7 @@ import '../widgets/reusable/spline_area.dart';
 import '../widgets/reusable/column_chart.dart';
 import '../widgets/reusable/division.dart';
 import '../widgets/shared/side_menu.dart';
+import 'home_page.dart';
 
 class Report extends StatefulWidget {
   Report({
@@ -44,6 +45,7 @@ class _ReportState extends State<Report> {
                     IconButton(
                       onPressed: (){
                         print("Home");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                       }, 
                       icon: Icon(Icons.home), 
                       color: ColorSelector.getRRed(),

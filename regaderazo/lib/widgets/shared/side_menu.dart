@@ -72,9 +72,17 @@ class _SideBarState extends State<SideBar> {
             if (data != null) return _buildSide(data);
           }
         }
-
-        return Center(child: CircularProgressIndicator());
+        return _loading();
       },
+    );
+  }
+
+  Container _loading() {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: Drawer(
+        child: Center(child: CircularProgressIndicator())
+      )
     );
   }
 

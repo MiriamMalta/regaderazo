@@ -17,6 +17,15 @@ class UsersEventCreateTo extends UsersEvent {
   List<Object> get props => [profiles];
 }
 
+class UsersLoadEvent extends UsersEvent {
+  final String useruid;
+
+  UsersLoadEvent({required this.useruid});
+
+  @override
+  List<Object> get props => [useruid];
+}
+
 class UsersEventDeleteTo extends UsersEvent {
   final String profiles;
 
