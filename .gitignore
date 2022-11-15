@@ -19,3 +19,6 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+# Specific documents that should not be checked in.
+regaderazo/lib/api/secrets.dart
