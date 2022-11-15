@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/bloc/users_bloc.dart';
 import '../config/colors.dart';
 import '../data/clemente.dart';
 import '../data/leonor.dart';
@@ -59,71 +61,97 @@ class _AccountState extends State<Account> {
       drawer: SideBar(
         //sideMenuColor: _primaryColor,
       ),
-      body: Container(
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.width * 0.1,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+      body: Stack(
+        children: [
+          Container(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.width * 0.1,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    IconButton(
-                      onPressed: (){
-                        print("Home");
-                      }, 
-                      icon: Icon(Icons.home), 
-                      color: ColorSelector.getRRed(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: (){
+                            print("Home");
+                          }, 
+                          icon: Icon(Icons.home), 
+                          color: ColorSelector.getRRed(),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.05,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        Text(
+                          'Cuentas', 
+                          style: TextStyle(
+                            fontSize: 30, 
+                            fontWeight: FontWeight.bold
+                          )
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Cuentas', 
-                      style: TextStyle(
-                        fontSize: 30, 
-                        fontWeight: FontWeight.bold
-                      )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.65,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          alignment: Alignment.center,
+                          child: Text('Mis Cuentas')
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.65,
-                    ),
+                    Division(),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      alignment: Alignment.center,
-                      child: Text('Mis Cuentas')
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width * 0.05,
+                        bottom: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < _profiles.length; i++)
+                          _buildProfile(_profiles[i]),
+                        ]
+                      ),
                     ),
                   ],
                 ),
-                Division(),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width * 0.05,
-                    bottom: MediaQuery.of(context).size.width * 0.05,
-                  ),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < _profiles.length; i++)
-                      _buildProfile(_profiles[i]),
-                    ]
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          Positioned(
+            bottom: MediaQuery.of(context).size.height * 0.035,
+            right: MediaQuery.of(context).size.height * 0.035,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.07,
+              width: MediaQuery.of(context).size.height * 0.07,
+              child: FloatingActionButton(
+                heroTag: "btn1",
+                backgroundColor: Colors.green,
+                splashColor: Colors.greenAccent,
+                onPressed: () {
+                  //BlocProvider.of<UsersBloc>(context).add(UsersEventAddTo(profiles: _profiles));
+                },
+                child: Icon(
+                  //Icons.photo_camera_outlined,
+                  Icons.add,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.height * 0.045,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -162,13 +190,17 @@ class _AccountState extends State<Account> {
             ],
           ),
           Text("Tabla de temperaturas"),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: ColumnChart(
-              data: _getTempChart(profile['temp_data']),
-              color: profile['color'],
-            ),
+          Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ColumnChart(
+                  data: _getTempChart(profile['temp_data']),
+                  color: profile['color'],
+                ),
+              ),
+            ],
           ),
         ],
       ),

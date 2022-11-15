@@ -64,18 +64,27 @@ class UserAuthRepository {
       assert(user.uid == currentUser!.uid);
 
       // crear tabla user en firebase cloudFirestore y agregar valor profiles []
-      await _createUserCollectionFirebase(_auth.currentUser!.uid);
+      await _createUserCollectionFirebase(_auth.currentUser!);
     }
   }
 
-  Future<void> _createUserCollectionFirebase(String uid) async {
+  Future<void> _createUserCollectionFirebase(User user) async {
     var userDoc =
-        await FirebaseFirestore.instance.collection("user").doc(uid).get();
+      await FirebaseFirestore.instance.collection("user").doc(user.uid).get();
     // Si no exite el doc, lo crea con valor default lista vacia
     if (!userDoc.exists) {
-      await FirebaseFirestore.instance.collection("user").doc(uid).set(
+      await FirebaseFirestore.instance.collection("user").doc(user.uid).set({
+        'id': user.uid,
+        'username': user.displayName,
+        'profilePicture': user.photoURL,
+        'email': user.email,
+        'phoneNumber': user.phoneNumber,
+        'isAdministrator': false,
+      });
+      await FirebaseFirestore.instance.collection("profile").doc(user.uid).set(
         {
-          "profiles": [],
+          'useruid': user.uid,
+          'profiles': [],
         },
       );
     } else {
