@@ -20,9 +20,7 @@ class UserAuthRepository {
     print('\x1B[32mcurrent user: ${_auth.currentUser}');
     return _auth.currentUser?.uid;
   }
-
-  // true -> go home page
-  // false -> go login page
+  
   bool isAlreadyAuthenticated() {
     return _auth.currentUser != null;
   }
@@ -85,6 +83,7 @@ class UserAuthRepository {
         {
           'useruid': user.uid,
           'profiles': [],
+          'temperature': null
         },
       );
     } else {

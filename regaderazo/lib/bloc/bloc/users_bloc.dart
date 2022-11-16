@@ -14,6 +14,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<UsersEventCreateTo>(_createProfile);
     on<UsersEventDeleteTo>(_deleteProfile);
     on<UsersLoadEvent>(_loadProfiles);
+    on<UsersAddTemperatureEvent>(_addTemperature);
   }
 
   FutureOr<void> _createProfile(UsersEventCreateTo event, Emitter<UsersState> emit) async {
@@ -35,7 +36,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     Map profile = {
       "name": event.profiles,
       "color": "0xFF000000",
-      "temperature": [],
+      "temperature_list": [],
     };
     print(profile);
     try {
@@ -73,6 +74,73 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       emit(UsersErrorState(error: "No se pudo agregar el perfil"));
     }
   } 
+
+  FutureOr<void> _addTemperature(UsersAddTemperatureEvent event, Emitter<UsersState> emit) async {
+    String useruid = UserAuthRepository.userInstance?.currentUser?.uid ?? "";
+    print("User uid: $useruid");
+    if (useruid == "") {
+      return;
+    }
+    final QuerySnapshot result = await FirebaseFirestore.instance
+      .collection('profile')
+      .where('useruid', isEqualTo: useruid)
+      .get();
+    print("result: ${result.docs.length}");
+    final List<DocumentSnapshot> documents = result.docs;
+    if (documents.length == 0) {
+      emit(UsersErrorState(error: "Usuario no encontrado"));
+      return;
+    }
+    Map<String, dynamic> temperature = {
+      "temperature": event.temperature,
+      "date": DateTime.now().toString(),
+    };
+    print(temperature);
+    await FirebaseFirestore.instance
+      .collection('profile')
+      .doc(useruid)
+      .update({
+        'temperature': event.temperature,
+      });
+    try {
+      List<dynamic> document = documents[0]['profiles'];
+      print("document: $document");
+      if (document.indexWhere((element) => element['name'] == event.profile) != -1) {
+        var index = document.indexWhere((element) => element['name'] == event.profile);
+        print(document.indexWhere((element) => element['name'] == event.profile));
+        emit(UsersAddedTempState(temp: "Agregando temperatura")); 
+        /* await FirebaseFirestore.instance
+        .collection('profile/$useruid/profiles/$index')
+        .add(temperature); */
+        await FirebaseFirestore.instance
+          .collection('profile')
+          .doc(useruid)
+          .collection('$index')
+          .add(temperature);
+        /* final QuerySnapshot res = await FirebaseFirestore.instance
+          .collection('profile')
+          .doc(useruid)
+          .collection('$index')
+          .get();
+        print("TEMP FROM DOC");
+        for (var i = 0; i < res.docs.length; i++) {
+          print(res.docs[i].data());
+        } */
+          // .collection('profile/$useruid/profiles/$index/temperature')
+          // .add(temperature as Map<String, dynamic>);
+          /* .collection('profile')
+          .doc(useruid)
+          .set({
+            'profiles/$index/temperature': FieldValue.arrayUnion([temperature]),
+          }, SetOptions(merge: true)); */
+        print(temperature);
+      }
+    } 
+    catch (e) {
+      print(e);
+      emit(UsersErrorState(error: "No se pudo agregar la temperatura"));
+    }
+  }
 
   FutureOr<void> _loadProfiles(UsersLoadEvent event, Emitter<UsersState> emit) async {
     String useruid = UserAuthRepository.userInstance?.currentUser?.uid ?? "";

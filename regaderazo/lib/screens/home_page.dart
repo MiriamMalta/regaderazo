@@ -3,16 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:regaderazo/bloc/bloc/users_bloc.dart';
-import 'package:regaderazo/data/leonor.dart';
-import 'package:regaderazo/data/pedro.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../auth/user_auth_repository.dart';
 import '../config/colors.dart';
-import '../data/clemente.dart';
-import '../data/piedad.dart';
-import '../data/leonor.dart';
-import '../data/pedro.dart';
 import '../widgets/reusable/division.dart';
 import '../widgets/shared/side_menu.dart';
 
@@ -25,11 +19,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var slider = false;
-  var general_index = -1;
-  var queue = Queue<int>.from([0]); 
+  var queue = Queue<int>.from([-1]); 
+  var which = {};
   var temp = null;
-
-  List<dynamic> _profiles = [];
 
   @override
   Widget build(BuildContext context) {
@@ -157,14 +149,21 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print("temp: $temp");
-                    if (general_index < 0) {
+                    print("index ${queue.first} temp: $temp");
+                    if (queue.first < 0) {
                       ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
                         SnackBar(content: Text('No has seleccionado un perfil')),
                       );
                     }
+                    if (queue.first > -1 && temp != null) {
+                      BlocProvider.of<UsersBloc>(context).add(UsersAddTemperatureEvent(
+                        profile: which['name'],
+                        temperature: temp.toString(),
+                      ));
+                    }
+                    temp = null;
                   }, 
                   child: Text("Iniciar regadera")
                   )
@@ -211,6 +210,7 @@ class _HomePageState extends State<HomePage> {
 
   _listProfiles() {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
+    CollectionReference profile = user.doc('profile').collection('profile');
     return FutureBuilder<DocumentSnapshot>(
       future: user.doc(UserAuthRepository().getuid()).get(),
       builder:
@@ -221,9 +221,8 @@ class _HomePageState extends State<HomePage> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
-            _profiles = data!['profiles'];
-            for (int i = 0; i < _profiles.length; i++) 
-              _profiles[i]['select'] = false;
+            print(" data to read ${profile.doc(data!['profile']).get()}");
+            if (data?['profiles'].length == 0) return Center(child: Text('No hay usuarios'));
             if (data != null) return _listProfiles2(data);
           }
         }
@@ -235,17 +234,18 @@ class _HomePageState extends State<HomePage> {
   Widget _listProfiles2(Map<String, dynamic> data) {
     return Column(        
       children: [
-        for (int i = 0; i < _profiles.length; i++)
+        /*for (int i = 0; i < _profiles.length; i++)
           _character(
             _profiles[i],
             i,
           ),
+        */
         // get from firebase
-        /* for (int i = 0; i < data['profiles'].length; i++)
+        for (int i = 0; i < data['profiles'].length; i++)
           _character(
             data['profiles'][i],
-            i + _profiles.length,
-          ), */
+            i,
+          ),
       ],
     );
   }
@@ -255,15 +255,12 @@ class _HomePageState extends State<HomePage> {
       onTap: (){
         setState(() {
           queue.add(index);
+          which = profile;
           if (queue.length > 1) {
-            _profiles[queue.first]['select'] = false;
             queue.removeFirst();
           }
-          _profiles[queue.last]['select'] = !_profiles[queue.last]['select'];
-          if (_profiles[queue.last]['select'] == true) {
-            general_index = queue.first;
-            print(general_index);
-          } 
+          print(queue);
+          print(which['name']);
         });
       },
       child: Container(
@@ -277,7 +274,7 @@ class _HomePageState extends State<HomePage> {
         ),
         width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
-          color: profile['select'] == false ? ColorSelector.getGreyish() : ColorSelector.getPink(),
+          color: _chooseColor(index),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(
@@ -293,6 +290,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Color _chooseColor(int index){
+    if (index == queue.first) {
+      return ColorSelector.getPink();
+    } else {
+      return ColorSelector.getGreyish();
+    }
+  }
+
   Color _getColorFromHex(String hexColor) {
     hexColor = hexColor.replaceAll("#", "");
     if (hexColor.length == 6) {
@@ -306,7 +311,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _slider () {
+  /* Widget _slider () {
     if (slider == true) {
       return SleekCircularSlider(
         min: -10.0,
@@ -351,13 +356,16 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-  }
+  } */
 
   Widget _slider2 () {
     var initial;
-    if (general_index >= 0) {
-      initial = _profiles[general_index]["data"];
-      if (initial == null) initial = 0.0;
+    if (queue.first >= 0) {
+      try {
+        initial = which["temperature"].last()["temperature"];
+      } catch (e) {
+        initial = 0.0;
+      }
       temp = initial;
     }
     else {

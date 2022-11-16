@@ -26,6 +26,16 @@ class UsersLoadEvent extends UsersEvent {
   List<Object> get props => [useruid];
 }
 
+class UsersAddTemperatureEvent extends UsersEvent {
+  final String profile;
+  final String temperature;
+
+  UsersAddTemperatureEvent({required this.profile, required this.temperature});
+
+  @override
+  List<Object> get props => [profile, temperature];
+}
+
 class UsersEventDeleteTo extends UsersEvent {
   final String profiles;
 

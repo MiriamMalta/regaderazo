@@ -30,6 +30,15 @@ class UsersAddedState extends UsersState {
   List<Object> get props => [profile];
 }
 
+class UsersAddedTempState extends UsersState {
+  final String temp;
+
+  UsersAddedTempState({required this.temp});
+
+  @override
+  List<Object> get props => [temp];
+}
+
 class UsersErrorState extends UsersState {
   final String error;
 
