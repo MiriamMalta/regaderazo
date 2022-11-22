@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../auth/user_auth_repository.dart';
+import '../../../auth/user_auth_repository.dart';
 
 part 'users_event.dart';
 part 'users_state.dart';
@@ -15,6 +15,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<UsersEventDeleteTo>(_deleteProfile);
     on<UsersLoadEvent>(_loadProfiles);
     on<UsersAddTemperatureEvent>(_addTemperature);
+    on<UserChangeColorEvent>(_changeColor);
   }
 
   FutureOr<void> _createProfile(UsersEventCreateTo event, Emitter<UsersState> emit) async {
@@ -36,7 +37,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     Map profile = {
       "name": event.profiles,
       "color": "0xFF000000",
-      "temperature_list": [],
+      "lastTemperature": null,
     };
     print(profile);
     try {
@@ -94,6 +95,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     Map<String, dynamic> temperature = {
       "temperature": event.temperature,
       "date": DateTime.now().toString(),
+      
     };
     print(temperature);
     await FirebaseFirestore.instance
@@ -104,19 +106,38 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       });
     try {
       List<dynamic> document = documents[0]['profiles'];
-      print("document: $document");
+      //print("document: $document");
       if (document.indexWhere((element) => element['name'] == event.profile) != -1) {
-        var index = document.indexWhere((element) => element['name'] == event.profile);
-        print(document.indexWhere((element) => element['name'] == event.profile));
+        //var index = document.indexWhere((element) => element['name'] == event.profile);
+        //print(document.indexWhere((element) => element['name'] == event.profile));
         emit(UsersAddedTempState(temp: "Agregando temperatura")); 
         /* await FirebaseFirestore.instance
         .collection('profile/$useruid/profiles/$index')
         .add(temperature); */
+        print('\x1B[32m${document}\x1B[0m');
+        document[document.indexWhere((element) => element['name'] == event.profile)]['lastTemperature'] = event.temperature;
+        print('\x1B[32m${document}\x1B[0m');
         await FirebaseFirestore.instance
           .collection('profile')
           .doc(useruid)
-          .collection('$index')
-          .add(temperature);
+          .set({
+            'profiles': document,
+          }, SetOptions(merge: true));
+        await FirebaseFirestore.instance
+          .collection('profile')
+          .doc(useruid)
+          .collection(event.profile)
+          .doc('temperatures')
+          .set({
+            'temperatures': FieldValue.arrayUnion([temperature]),
+          }, SetOptions(merge: true));
+        await FirebaseFirestore.instance
+          .collection('profile')
+          .doc(useruid)
+          .update({
+            'temperature_list': FieldValue.arrayUnion([temperature]),
+          });
+        emit(UsersAddState(profiles: document));
         /* final QuerySnapshot res = await FirebaseFirestore.instance
           .collection('profile')
           .doc(useruid)
@@ -132,7 +153,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           .doc(useruid)
           .set({
             'profiles/$index/temperature': FieldValue.arrayUnion([temperature]),
-          }, SetOptions(merge: true)); */
+          }, SetOptions(merge: true)); */     
         print(temperature);
       }
     } 
@@ -164,6 +185,46 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     } 
     catch (e) {
       emit(UsersErrorState(error: "No se encontrar el perfil"));
+    }
+  }
+
+  FutureOr<void> _changeColor(UserChangeColorEvent event, Emitter<UsersState> emit) async{
+    String useruid = UserAuthRepository.userInstance?.currentUser?.uid ?? "";
+    print("User uid: $useruid");
+    if (useruid == "") {
+      return;
+    }
+    final QuerySnapshot result = await FirebaseFirestore.instance
+      .collection('profile')
+      .where('useruid', isEqualTo: useruid)
+      .get();
+    print("result: ${result.docs.length}");
+    final List<DocumentSnapshot> documents = result.docs;
+    if (documents.length == 0) {
+      emit(UsersErrorState(error: "Usuario no encontrado"));
+      return;
+    }
+    try {
+      List<dynamic> document = documents[0]['profiles'];
+      print("document: $document");
+      if (document.indexWhere((element) => element['name'] == event.profile) != -1) {
+        emit(UsersAddedTempState(temp: "Cambiando color")); 
+        print('\x1B[32m${document}\x1B[0m');
+        document[document.indexWhere((element) => element['name'] == event.profile)]['color'] = event.color;
+        print('\x1B[32m${document}\x1B[0m');
+        await FirebaseFirestore.instance
+          .collection('profile')
+          .doc(useruid)
+          .set({
+            'profiles': document,
+          }, SetOptions(merge: true));
+        print(event.color);
+        emit(UsersAddState(profiles: document));
+      }
+    } 
+    catch (e) {
+      print(e);
+      emit(UsersErrorState(error: "No se pudo cambiar el color"));
     }
   }
 

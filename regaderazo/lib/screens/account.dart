@@ -1,12 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/bloc/users_bloc.dart';
+import '../auth/user_auth_repository.dart';
+import '../blocs/users/bloc/users_bloc.dart';
 import '../config/colors.dart';
-import '../data/clemente.dart';
-import '../data/leonor.dart';
-import '../data/pedro.dart';
-import '../data/piedad.dart';
 import '../models/temperature.dart';
 import '../widgets/reusable/column_chart.dart';
 import '../widgets/reusable/division.dart';
@@ -26,7 +24,15 @@ class _AccountState extends State<Account> {
     _controller.clear();
   }
 
-  List<Map<String, dynamic>> _profiles = [
+  List _colors = [
+    "0xFF000000",
+    "0xFF231942",
+    "0xFF5E548E",
+    "0xFF9B90C2",
+    "0xFFD3CCE3",
+  ];
+
+  /* List<Map<String, dynamic>> _profiles = [
     {
       "name": PiedadData().getName(),
       "color": PiedadData().getColor(),
@@ -59,7 +65,7 @@ class _AccountState extends State<Account> {
       "day_data": PedroData().getDay(),
       "month_data": PedroData().getMonth(),
     },
-  ];
+  ]; */
 
   @override
   Widget build(BuildContext context) {
@@ -119,18 +125,7 @@ class _AccountState extends State<Account> {
                       ],
                     ),
                     Division(),
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.width * 0.05,
-                        bottom: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < _profiles.length; i++)
-                          _buildProfile(_profiles[i]),
-                        ]
-                      ),
-                    ),
+                    _showFavorites(),
                   ],
                 ),
               ),
@@ -163,8 +158,78 @@ class _AccountState extends State<Account> {
     );
   }
 
-  Widget _buildProfile (Map<String, dynamic> profile) {
+  Widget _showFavorites() {
+    CollectionReference user = FirebaseFirestore.instance.collection('profile');
+    return FutureBuilder<DocumentSnapshot>(
+      future: user.doc(UserAuthRepository().getuid()).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+            if (data != null) {
+              //_listSongs = data['favorites'];
+              //print(_listSongs);
+              //print(data['profiles']);
+              if (data['profiles'].length == 0) return _empty("No hay perfiles en la cuenta");
+              else return Container(
+                child: Column(
+                  children: [
+                    _buildList(data['profiles']),
+                  ],
+                ),
+              );
+            };
+          }
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Container _empty(String text){
     return Container(
+      //width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildList(List<dynamic> data) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.width * 0.05,
+        bottom: MediaQuery.of(context).size.width * 0.05,
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < data.length; i++)
+          _buildElement(data[i]),
+        ]
+      ),
+    );
+  }
+
+  Widget _buildElement (Map<String, dynamic> profile) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.5,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.width * 0.05,
       ),
@@ -187,9 +252,9 @@ class _AccountState extends State<Account> {
                 ),
               ),
               Text(
-                "${profile['temperature']}ºC",
+                "${profile['lastTemperature'].substring(0, 4)}ºC", // "${profile['lastTemperature']}ºC",
                 style: TextStyle(
-                  color: profile['color'],
+                  color: Color(int.parse(profile['color'])),
                   fontWeight: FontWeight.bold,
                   fontSize: 18
                 ),
@@ -197,27 +262,160 @@ class _AccountState extends State<Account> {
             ],
           ),
           Text("Tabla de temperaturas"),
-          Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ColumnChart(
-                  data: _getTempChart(profile['temp_data']),
-                  color: profile['color'],
-                ),
-              ),
-            ],
+          Container(
+            child:
+              _showTemperature(profile['name'], profile['color']),
+              //_showTemperatures(profile),
+              //_makeTempChart(profile['name'], profile['temperature']??[0]),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: <Widget> [
+                for (int i = 0; i < _colors.length; i++)
+                  MaterialButton(
+                    color: Color(int.parse(_colors[i])),
+                    shape: CircleBorder(),
+                    onPressed: () {
+                      print('\x1B[34mColor: ${_colors[i]}\x1B[0m');
+                      BlocProvider.of<UsersBloc>(context).add(UserChangeColorEvent(profile: profile['name'], color: _colors[i]));
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Account()), (route) => false);
+                    },
+                  ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
+  /* Color _getColorFromHex(String hexColor) {
+    hexColor = hexColor.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    print("HEX ${hexColor.length}");
+    if (hexColor.length == 8) {
+      return Color(int.parse("0x$hexColor"));
+    }
+    else {
+      return Colors.black;
+    }
+  } */
+
+  /* _getTempInfo(String name) async {
+    //BlocProvider.of<TemperatureBloc>(context).add(TemperatureGetEvent(profile: name));
+    //getTemperature(name);
+    Future<dynamic> temp = BlocProvider.of<TemperatureBloc>(context).getTemperature(name);
+    print(temp);
+  } */
+
+  /* BlocConsumer<TemperatureBloc, TemperatureState> _showTemperatures(String name) {
+    return BlocConsumer<TemperatureBloc, TemperatureState>(
+      listener: (context, state) {
+        if (state is TemperatureInitial) {
+        }
+        else if (state is TempErrorState) {
+            ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+              ),
+            );
+          }
+      },
+      builder: (context, state) {
+        print(state);
+        if (state is TempChartState) {
+          var _list = state.temp;
+          print(_list);
+          if (_list.length == 0) return _empty("No hay temperaturas en la cuenta");
+          else return Container(
+            /* child: Column(
+              children: [
+                //_listArea(),
+              ],
+            ), */
+            child: Text(name)
+          );
+        }
+        else {
+          return _empty("No hay temperaturas en la cuenta");
+        }
+      },
+    );
+  } */
+
+  Widget _showTemperature(String profileName, String color) {
+    CollectionReference user = FirebaseFirestore.instance.collection('profile').doc(UserAuthRepository().getuid()).collection('$profileName');
+    List<Map<String, dynamic>> _templist = []; 
+    return FutureBuilder<DocumentSnapshot>(
+      future: user.doc('temperatures').get(),
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+            if (data != null) {
+              //print('\x1B[33m${data}\x1B[0m');
+              //print('\x1B[31m${data['temperatures']}\x1B[0m');
+              if (data['temperatures'].length == 0) return _empty("No hay temperaturas en la cuenta");
+              else {
+                for (var i = 0; i < data['temperatures'].length; i++) {
+                  //print(data['temperatures'][i]);
+                  _templist.add(data['temperatures'][i]);
+                }
+                print('\x1B[33m$profileName ${_templist}\x1B[0m');
+                return Container(
+                  child: Column(
+                    children: [
+                      _makeTempChart(color, _templist)
+                    ],
+                  ),
+                );
+              }
+            };
+          }
+        }
+        return _empty("No hay temperaturas en la cuenta");
+      },
+    );
+  }
+
+  _makeTempChart (String color, List<Map<String, dynamic>> temperature) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.3,
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: ColumnChart(
+        data: _getTempChart(temperature),
+        color: Color(int.parse(color)), //_getColorFromHex(color)
+      ),
+    );
+  }
+
   _getTempChart (List<Map<String, dynamic>> data ) {
     List<TemperatureChart> list = [];
-    for(var i = 0; i < data.length; i++) {
-      list.add(TemperatureChart(data[i]['day'], data[i]['temperature']));
+    print('\x1B[31mlenght ${data.length}\x1B[0m');
+    if (data.length >= 7) {
+      for(var i = data.length - 7; i < data.length; i++) {
+        String date = data[i]['date'];
+        list.add(TemperatureChart(date.substring(8, 10), double.parse('${data[i]['temperature']}')));
+      }
+    }
+    else {
+      for(var i = 0; i < data.length; i++) {
+        String date = data[i]['date'];
+        //print(date.substring(8, 10));
+        //print(double.parse('${data[i]['temperature']}'));
+        list.add(TemperatureChart(date.substring(8, 10), double.parse('${data[i]['temperature']}')));
+      }
     }
     return list;
   }

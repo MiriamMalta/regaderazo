@@ -2,10 +2,10 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:regaderazo/bloc/bloc/users_bloc.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../auth/user_auth_repository.dart';
+import '../blocs/users/bloc/users_bloc.dart';
 import '../config/colors.dart';
 import '../widgets/reusable/division.dart';
 import '../widgets/shared/side_menu.dart';
@@ -157,11 +157,23 @@ class _HomePageState extends State<HomePage> {
                         SnackBar(content: Text('No has seleccionado un perfil')),
                       );
                     }
-                    if (queue.first > -1 && temp != null) {
+                    if (temp == 0){
+                      ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(content: Text('La temperatura es 0')),
+                      );
+                    }
+                    if (queue.first > -1 && temp != null && temp != 0) {
                       BlocProvider.of<UsersBloc>(context).add(UsersAddTemperatureEvent(
                         profile: which['name'],
                         temperature: temp.toString(),
                       ));
+                      ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(content: Text('Se ha iniciado el regaderazo con ${temp.toStringAsFixed(1)}°C')),
+                      );
                     }
                     temp = null;
                   }, 
@@ -210,7 +222,7 @@ class _HomePageState extends State<HomePage> {
 
   _listProfiles() {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
-    CollectionReference profile = user.doc('profile').collection('profile');
+    //CollectionReference profile = user.doc('profile').collection('profile');
     return FutureBuilder<DocumentSnapshot>(
       future: user.doc(UserAuthRepository().getuid()).get(),
       builder:
@@ -221,7 +233,7 @@ class _HomePageState extends State<HomePage> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
-            print(" data to read ${profile.doc(data!['profile']).get()}");
+            //print(" data to read ${profile.doc(data!['profile']).get()}");
             if (data?['profiles'].length == 0) return Center(child: Text('No hay usuarios'));
             if (data != null) return _listProfiles2(data);
           }
@@ -283,7 +295,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: _getColorFromHex(profile['color']),
+            color: Color(int.parse(profile['color'])),
           ),
         ),
       ),
@@ -298,7 +310,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Color _getColorFromHex(String hexColor) {
+  /* Color _getColorFromHex(String hexColor) {
     hexColor = hexColor.replaceAll("#", "");
     if (hexColor.length == 6) {
       hexColor = "FF" + hexColor;
@@ -309,7 +321,7 @@ class _HomePageState extends State<HomePage> {
     else {
       return Colors.black;
     }
-  }
+  } */
 
   /* Widget _slider () {
     if (slider == true) {
@@ -402,6 +414,4 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
 }

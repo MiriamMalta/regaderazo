@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:regaderazo/blocs/temperature/bloc/temperature_bloc.dart';
 import 'package:regaderazo/screens/home_page.dart';
 
 import 'auth/bloc/auth_bloc.dart';
-import 'bloc/bloc/users_bloc.dart';
+import 'blocs/users/bloc/users_bloc.dart';
 import 'screens/account.dart';
 import 'screens/log_in/login.dart';
 import 'screens/numbers.dart';
@@ -21,6 +22,9 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => UsersBloc(),
+        ),
+        BlocProvider(
+          create: (context) => TemperatureBloc(),
         ),
       ],
       child: MyApp(),
@@ -56,7 +60,7 @@ class MyApp extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthSuccessState) {
-            return HomePage();
+            return Account(); //HomePage
           } else if (state is UnAuthState ||
               state is AuthErrorState ||
               state is SignOutSuccessState) {

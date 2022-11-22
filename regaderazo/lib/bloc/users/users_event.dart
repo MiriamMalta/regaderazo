@@ -1,7 +1,6 @@
 part of 'users_bloc.dart';
 
-@immutable
-abstract class UsersEvent extends Equatable{
+abstract class UsersEvent{
   const UsersEvent();
 
   @override
@@ -34,6 +33,15 @@ class UsersAddTemperatureEvent extends UsersEvent {
 
   @override
   List<Object> get props => [profile, temperature];
+}
+
+class UsersLoadTemperatureEvent extends UsersEvent {
+  final String profile;
+
+  UsersLoadTemperatureEvent({required this.profile});
+
+  @override
+  List<Object> get props => [profile];
 }
 
 class UsersEventDeleteTo extends UsersEvent {
