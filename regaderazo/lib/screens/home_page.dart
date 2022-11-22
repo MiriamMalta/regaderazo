@@ -43,9 +43,17 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       onPressed: (){
                         print("Home");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                        /* Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())); */
+                        Navigator.pushReplacement(
+                          context, 
+                          PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) => HomePage(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
                       }, 
-                      icon: Icon(Icons.home), 
+                      icon: Icon(Icons.replay), 
                       color: ColorSelector.getRRed(),
                     ),
                   ],

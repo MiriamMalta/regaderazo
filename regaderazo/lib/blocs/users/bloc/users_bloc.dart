@@ -4,12 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '../../../api/thinkspeak.dart';
 import '../../../auth/user_auth_repository.dart';
 
 part 'users_event.dart';
 part 'users_state.dart';
 
 class UsersBloc extends Bloc<UsersEvent, UsersState> {
+  final ht = APIRepository();
+  
   UsersBloc() : super(UsersInitial()) {
     on<UsersEventCreateTo>(_createProfile);
     on<UsersEventDeleteTo>(_deleteProfile);
@@ -153,7 +156,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           .doc(useruid)
           .set({
             'profiles/$index/temperature': FieldValue.arrayUnion([temperature]),
-          }, SetOptions(merge: true)); */     
+          }, SetOptions(merge: true)); */   
+        await ht.putTemp(event.temperature);
+        List<Map<String, dynamic>> allData = await ht.getTest();  
+        print("DATAAA $allData");
         print(temperature);
       }
     } 

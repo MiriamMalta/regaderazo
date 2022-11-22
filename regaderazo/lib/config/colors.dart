@@ -23,7 +23,7 @@ class ColorSelector {
     return GREY;
   }
 
-  static const GREYISH = Color.fromRGBO(235, 240, 244, 1); //#E1D9E6
+  static const GREYISH = Color.fromRGBO(231, 225, 234, 1); //#E1D9E6 // 235, 240, 244, 1
   static Color getGreyish() {
     return GREYISH;
   }

@@ -26,10 +26,12 @@ class _AccountState extends State<Account> {
 
   List _colors = [
     "0xFF000000",
-    "0xFF231942",
     "0xFF5E548E",
     "0xFF9B90C2",
-    "0xFFD3CCE3",
+    "0xFF9F86C0",
+    "0xFFA87DC2",
+    "0xFFBE95C4",
+    "0xFFE0B1CB",
   ];
 
   /* List<Map<String, dynamic>> _profiles = [
@@ -89,9 +91,31 @@ class _AccountState extends State<Account> {
                         IconButton(
                           onPressed: (){
                             print("Home");
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                            Navigator.pushReplacement(
+                              context, 
+                              PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => HomePage(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                              ),
+                            );
                           }, 
                           icon: Icon(Icons.home), 
+                          color: ColorSelector.getRRed(),
+                        ),
+                        IconButton(
+                          onPressed: (){
+                            print("Home");
+                            Navigator.pushReplacement(
+                              context, 
+                              PageRouteBuilder(
+                                  pageBuilder: (context, animation1, animation2) => Account(),
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                              ),
+                            );
+                          }, 
+                          icon: Icon(Icons.replay), 
                           color: ColorSelector.getRRed(),
                         ),
                       ],
@@ -229,7 +253,7 @@ class _AccountState extends State<Account> {
 
   Widget _buildElement (Map<String, dynamic> profile) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: MediaQuery.of(context).size.height * 0.46,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.width * 0.05,
       ),
@@ -268,26 +292,40 @@ class _AccountState extends State<Account> {
               //_showTemperatures(profile),
               //_makeTempChart(profile['name'], profile['temperature']??[0]),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.05,
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: <Widget> [
-                for (int i = 0; i < _colors.length; i++)
-                  MaterialButton(
-                    color: Color(int.parse(_colors[i])),
-                    shape: CircleBorder(),
-                    onPressed: () {
-                      print('\x1B[34mColor: ${_colors[i]}\x1B[0m');
-                      BlocProvider.of<UsersBloc>(context).add(UserChangeColorEvent(profile: profile['name'], color: _colors[i]));
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Account()), (route) => false);
-                    },
+          _changeColor(profile['name']),
+        ],
+      ),
+    );
+  }
+
+  Widget _changeColor (String name) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.05,
+      child: ListView(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        children: <Widget> [
+          for (int i = 0; i < _colors.length; i++)
+            MaterialButton(
+              color: Color(int.parse(_colors[i])),
+              shape: CircleBorder(),
+              onPressed: () {
+                print('\x1B[34mColor: ${_colors[i]}\x1B[0m');
+                BlocProvider.of<UsersBloc>(context).add(UserChangeColorEvent(profile: name, color: _colors[i]));
+                /* Navigator.pushAndRemoveUntil(context, 
+                  MaterialPageRoute(builder: (context) => Account()), (route) => false
+                ); */
+                Navigator.pushReplacement(
+                  context, 
+                  PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Account(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
                   ),
-              ],
+                );
+              },
             ),
-          ),
         ],
       ),
     );
