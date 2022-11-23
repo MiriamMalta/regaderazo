@@ -62,12 +62,15 @@ class APIRepository {
   }
 
   Future<dynamic> getValvula() async {
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/3.json?api_key=YWOJUI2OQGO78WME&results');
+    // TODO: change field 5 to field 3
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/5.json?api_key=YWOJUI2OQGO78WME&results');
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print(data);
-      return data;
+      Map map = data;
+      List list = map['feeds'];
+      List<Map<String, dynamic>> listFull = list.map((e) => e as Map<String, dynamic>).toList();
+      return listFull.last;
     } else {
       throw Exception('Failed to load data');
     }

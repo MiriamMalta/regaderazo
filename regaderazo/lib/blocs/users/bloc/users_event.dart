@@ -10,11 +10,12 @@ abstract class UsersEvent extends Equatable{
 
 class UsersEventCreateTo extends UsersEvent {
   final String profiles;
+  final String admin;
 
-  UsersEventCreateTo({required this.profiles});
+  UsersEventCreateTo({required this.profiles, required this.admin});
 
   @override
-  List<Object> get props => [profiles];
+  List<Object> get props => [profiles, admin];
 }
 
 class UsersLoadEvent extends UsersEvent {

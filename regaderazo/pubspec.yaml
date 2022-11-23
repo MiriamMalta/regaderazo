@@ -16,6 +16,7 @@ dependencies:
   syncfusion_flutter_charts:
   font_awesome_flutter:
   sleek_circular_slider:
+  audioplayers:
   # Firebase
   firebase_core: 
   firebase_auth: 
@@ -37,6 +38,7 @@ flutter:
   assets:
     - assets/regaderazo_sin.png
     - assets/regaderazo_logo.png
+    - assets/time.mp3
   
   # fonts:
   #   - family: Schyler

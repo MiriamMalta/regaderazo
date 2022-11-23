@@ -23,6 +23,8 @@ class _AccountState extends State<Account> {
   void _clearText() {
     _controller.clear();
   }
+  bool isChecked = false;
+  TextEditingController _admin = TextEditingController();
 
   List _colors = [
     "0xFF000000",
@@ -252,6 +254,9 @@ class _AccountState extends State<Account> {
   }
 
   Widget _buildElement (Map<String, dynamic> profile) {
+    var temp = profile['temperature'];
+    if (temp == null) temp = 0;
+    else temp = profile['lastTemperature'].substring(0, 4);
     return Container(
       height: MediaQuery.of(context).size.height * 0.46,
       padding: EdgeInsets.only(
@@ -276,7 +281,7 @@ class _AccountState extends State<Account> {
                 ),
               ),
               Text(
-                "${profile['lastTemperature'].substring(0, 4)}ºC", // "${profile['lastTemperature']}ºC",
+                "${temp}ºC", // "${profile['lastTemperature']}ºC",
                 style: TextStyle(
                   color: Color(int.parse(profile['color'])),
                   fontWeight: FontWeight.bold,
@@ -474,6 +479,16 @@ class _AccountState extends State<Account> {
                   hintText: "Nombre de la cuenta",
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("¿Usuario admin? Ponga admin"),
+              TextField(
+                controller: _admin,
+                decoration: InputDecoration(
+                  hintText: "admin",
+                ),
+              ),
             ],
           ),
           actions: [
@@ -487,7 +502,7 @@ class _AccountState extends State<Account> {
             TextButton(
               onPressed: () {
                 print(_controller.text);
-                BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text));
+                BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text, admin: _admin.text));
                 _clearText;
                 Navigator.of(context).pop();
               }, 
@@ -498,4 +513,16 @@ class _AccountState extends State<Account> {
       }
     );
   }
+
+  Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.red;
+    }
 }

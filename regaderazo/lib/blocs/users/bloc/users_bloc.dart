@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../../../api/thinkspeak.dart';
 import '../../../auth/user_auth_repository.dart';
@@ -41,16 +42,12 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       "name": event.profiles,
       "color": "0xFF000000",
       "lastTemperature": null,
+      "admin": event.admin,
     };
     print(profile);
     try {
       List<dynamic> document = documents[0]['profiles'];
       print("document: $document");
-      /* if(profiles.indexWhere((element) => element['name'] == event.profiles) == -1) {
-        profiles.add(profile);
-        emit(UsersAddedState(profile: "Creando perfil")); 
-      } */
-      // checar si el perfil ya existe
       for (var i = 0; i < document.length; i++) {
         print(document[i]['name']);
         if (document[i]['name'] == event.profiles) {
@@ -59,11 +56,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           return;
         }
       }
-      /* else {
-        emit(UsersAddedState(profile: "Ya existe ese nombre de perfil"));
-      }   */ 
       emit(UsersAddedState(profile: "Creando perfil")); 
-      UsersEventCreateTo(profiles: event.profiles);
+      UsersEventCreateTo(profiles: event.profiles, admin: event.admin);
       await FirebaseFirestore.instance
         .collection('profile')
         .doc(useruid)
@@ -109,14 +103,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       });
     try {
       List<dynamic> document = documents[0]['profiles'];
-      //print("document: $document");
       if (document.indexWhere((element) => element['name'] == event.profile) != -1) {
-        //var index = document.indexWhere((element) => element['name'] == event.profile);
-        //print(document.indexWhere((element) => element['name'] == event.profile));
         emit(UsersAddedTempState(temp: "Agregando temperatura")); 
-        /* await FirebaseFirestore.instance
-        .collection('profile/$useruid/profiles/$index')
-        .add(temperature); */
         print('\x1B[32m${document}\x1B[0m');
         document[document.indexWhere((element) => element['name'] == event.profile)]['lastTemperature'] = event.temperature;
         print('\x1B[32m${document}\x1B[0m');
@@ -140,27 +128,43 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           .update({
             'temperature_list': FieldValue.arrayUnion([temperature]),
           });
-        emit(UsersAddState(profiles: document));
-        /* final QuerySnapshot res = await FirebaseFirestore.instance
-          .collection('profile')
-          .doc(useruid)
-          .collection('$index')
-          .get();
-        print("TEMP FROM DOC");
-        for (var i = 0; i < res.docs.length; i++) {
-          print(res.docs[i].data());
-        } */
-          // .collection('profile/$useruid/profiles/$index/temperature')
-          // .add(temperature as Map<String, dynamic>);
-          /* .collection('profile')
-          .doc(useruid)
-          .set({
-            'profiles/$index/temperature': FieldValue.arrayUnion([temperature]),
-          }, SetOptions(merge: true)); */   
+        emit(UsersAddState(profiles: document)); 
+        // SEND TO THINKSPEAK
         await ht.putTemp(event.temperature);
         List<Map<String, dynamic>> allData = await ht.getTest();  
         print("DATAAA $allData");
         print(temperature);
+        // TIMER FOR VÁLVULA
+        bool hora_de_banarse = false;
+        int _recordDuration = 600;
+        int _current = 0;
+        Timer? _timer;
+        print("\tRecord duration: $_recordDuration");
+        print("\tStarting recording...");
+        _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+          Map<String, dynamic> valvula = await ht.getValvula();  
+          print("VALVULA ${valvula['field5']}"); //field3
+          if (valvula['field5'] == "1"){ //field3
+            print("Hora de bañarse");
+            hora_de_banarse = true;
+          }
+          _current++;
+          print("\t\tTime recorded: $_current");
+          if (_current >= _recordDuration || hora_de_banarse) {
+            _timer?.cancel();
+            _timer = null;
+            _current = 0;
+            print("\t\tTimer cancelled");
+          }
+        });
+        if (hora_de_banarse){
+          print("HORAAA");
+          emit(DoneState(done: "Ya es hora de bañarse"));
+          final player = AudioPlayer();
+          await player.setSource(AssetSource('assets/time.mp3'));
+          await Future.delayed(Duration(seconds: 5));
+          await player.stop();
+        }
       }
     } 
     catch (e) {

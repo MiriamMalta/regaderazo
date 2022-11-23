@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:regaderazo/blocs/temperature/bloc/temperature_bloc.dart';
 import 'package:regaderazo/screens/home_page.dart';
+import 'package:regaderazo/screens/profiles_page.dart';
 
 import 'auth/bloc/auth_bloc.dart';
 import 'blocs/users/bloc/users_bloc.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/account': (context) => Account(),
         '/numbers': (context) => Numbers(),
+        '/profiles': (context) => ProfilesPage(),
       },
       home: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthSuccessState) {
-            return HomePage(); //HomePage
+            return ProfilesPage(); //HomePage
           } else if (state is UnAuthState ||
               state is AuthErrorState ||
               state is SignOutSuccessState) {

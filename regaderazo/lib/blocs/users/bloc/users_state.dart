@@ -39,6 +39,15 @@ class UsersAddedTempState extends UsersState {
   List<Object> get props => [temp];
 }
 
+class DoneState extends UsersState {
+  final String done;
+
+  DoneState({required this.done});
+
+  @override
+  List<Object> get props => [done];
+}
+
 class UsersErrorState extends UsersState {
   final String error;
 
