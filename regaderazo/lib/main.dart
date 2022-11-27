@@ -1,15 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:regaderazo/blocs/temperature/bloc/temperature_bloc.dart';
-import 'package:regaderazo/screens/home_page.dart';
-import 'package:regaderazo/screens/profiles_page.dart';
 
 import 'auth/bloc/auth_bloc.dart';
+import 'blocs/temperature/bloc/temperature_bloc.dart';
 import 'blocs/users/bloc/users_bloc.dart';
+
 import 'screens/account.dart';
+import 'screens/home_page.dart';
+import 'screens/home_page2.dart';
 import 'screens/log_in/login.dart';
 import 'screens/numbers.dart';
+import 'screens/profiles_page.dart';
 import 'screens/report.dart';
 
 void main() async {
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LogInForm(),
         '/report': (context) => Report(),
         '/home': (context) => HomePage(),
+        '/home2': (context) => HomePage2(),
         '/account': (context) => Account(),
         '/numbers': (context) => Numbers(),
         '/profiles': (context) => ProfilesPage(),
@@ -62,7 +65,7 @@ class MyApp extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthSuccessState) {
-            return ProfilesPage(); //HomePage
+            return ProfilesPage(); //HomePage //ProfilesPage
           } else if (state is UnAuthState ||
               state is AuthErrorState ||
               state is SignOutSuccessState) {

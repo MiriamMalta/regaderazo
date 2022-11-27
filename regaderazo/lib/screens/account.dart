@@ -19,13 +19,6 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  TextEditingController _controller = TextEditingController();
-  void _clearText() {
-    _controller.clear();
-  }
-  bool isChecked = false;
-  TextEditingController _admin = TextEditingController();
-
   List _colors = [
     "0xFF000000",
     "0xFF5E548E",
@@ -153,28 +146,6 @@ class _AccountState extends State<Account> {
                     Division(),
                     _showFavorites(),
                   ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.035,
-            right: MediaQuery.of(context).size.height * 0.035,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.height * 0.07,
-              child: FloatingActionButton(
-                heroTag: "btn1",
-                backgroundColor: Colors.green,
-                splashColor: Colors.greenAccent,
-                onPressed: () {
-                  _showDialog ();
-                },
-                child: Icon(
-                  //Icons.photo_camera_outlined,
-                  Icons.add,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.height * 0.045,
                 ),
               ),
             ),
@@ -462,67 +433,4 @@ class _AccountState extends State<Account> {
     }
     return list;
   }
-
-  _showDialog () {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Agregar cuenta"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("¿Desea agregar una nueva cuenta?"),
-              TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: "Nombre de la cuenta",
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text("¿Usuario admin? Ponga admin"),
-              TextField(
-                controller: _admin,
-                decoration: InputDecoration(
-                  hintText: "admin",
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _clearText;
-                Navigator.of(context).pop();
-              }, 
-              child: Text("Cancelar")
-            ),
-            TextButton(
-              onPressed: () {
-                print(_controller.text);
-                BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text, admin: _admin.text));
-                _clearText;
-                Navigator.of(context).pop();
-              }, 
-              child: Text("Aceptar")
-            ),
-          ],
-        );
-      }
-    );
-  }
-
-  Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-      };
-      if (states.any(interactiveStates.contains)) {
-        return Colors.blue;
-      }
-      return Colors.red;
-    }
 }

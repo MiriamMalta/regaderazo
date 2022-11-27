@@ -8,6 +8,7 @@ import '../../config/colors.dart';
 import '../../screens/account.dart';
 import '../../screens/home_page.dart';
 import '../../screens/numbers.dart';
+import '../../screens/profiles_page.dart';
 import '../../screens/report.dart';
 
 class SideBar extends StatefulWidget {
@@ -18,31 +19,27 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
-  int _currentPageIndex = 0;
   final _pagesNameList = [
+    "Perfiles",
     "Inicio",
     "Reporte",
     "Cuentas",
     "Más números",
   ];
   final _iconsList = [
+    Icons.face,
     Icons.home,
     Icons.analytics,
     Icons.account_box,
     Icons.auto_graph,
   ];
-  List<StatefulWidget> _pagesList = [
+  List<Widget> _pagesList = [
+    ProfilesPage(),
     HomePage(),
     Report(),
     Account(),
     Numbers(),
   ];
-  List<Widget> _pages = [
-    HomePage(),
-    Report(),
-    Account(),
-    Numbers(),
-  ]; 
 
   static const HOME = '/home';
   static const REPORT = '/report';
@@ -209,7 +206,7 @@ class _SideBarState extends State<SideBar> {
             },
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.22,
           ),
           ListTile(
             leading: Icon(Icons.settings),

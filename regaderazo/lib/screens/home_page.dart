@@ -252,7 +252,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _listProfiles2(Map<String, dynamic> data) {
-    //print(data['profiles']['name']);
     return Column(        
       children: [
         /*for (int i = 0; i < _profiles.length; i++)

@@ -47,6 +47,15 @@ class UserChangeColorEvent extends UsersEvent {
   List<Object> get props => [profile, color];
 }
 
+class UsersEventGoTo extends UsersEvent {
+  final String profile;
+
+  UsersEventGoTo({required this.profile});
+
+  @override
+  List<Object> get props => [profile];
+}
+
 class UsersEventDeleteTo extends UsersEvent {
   final String profiles;
 

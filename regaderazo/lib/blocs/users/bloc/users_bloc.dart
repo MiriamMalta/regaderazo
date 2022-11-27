@@ -20,6 +20,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<UsersLoadEvent>(_loadProfiles);
     on<UsersAddTemperatureEvent>(_addTemperature);
     on<UserChangeColorEvent>(_changeColor);
+    on<UsersEventGoTo>(_goToProfile);
   }
 
   FutureOr<void> _createProfile(UsersEventCreateTo event, Emitter<UsersState> emit) async {
@@ -42,7 +43,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       "name": event.profiles,
       "color": "0xFF000000",
       "lastTemperature": null,
-      "admin": event.admin,
+      "admin": event.admin == "" ? null : event.admin,
     };
     print(profile);
     try {
@@ -135,18 +136,32 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         print("DATAAA $allData");
         print(temperature);
         // TIMER FOR VÁLVULA
-        bool hora_de_banarse = false;
-        int _recordDuration = 600;
+        //bool hora_de_banarse = await _timer(false);
+        bool hora_de_banarse = await _timer(false);
+        print("aaaa: $hora_de_banarse");
+        /* Future.delayed(Duration(seconds: 20), () async { //600
+          if (hora_de_banarse) {
+            print("HORA DE BANARSE");
+          }
+          else {
+            print("NO ES HORA DE BANARSE");
+          }
+        }); */
+        /* int _recordDuration = 600;
         int _current = 0;
         Timer? _timer;
         print("\tRecord duration: $_recordDuration");
-        print("\tStarting recording...");
+        print("\tStarting timer...");
         _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
           Map<String, dynamic> valvula = await ht.getValvula();  
           print("VALVULA ${valvula['field5']}"); //field3
           if (valvula['field5'] == "1"){ //field3
             print("Hora de bañarse");
             hora_de_banarse = true;
+            /* final player = AudioPlayer();
+            await player.setSource(AssetSource('time.mp3'));
+            await Future.delayed(Duration(seconds: 5));
+            await player.stop(); */
           }
           _current++;
           print("\t\tTime recorded: $_current");
@@ -156,21 +171,62 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             _current = 0;
             print("\t\tTimer cancelled");
           }
-        });
-        if (hora_de_banarse){
+        }); */
+        //print(hora_de_banarse);
+        /* if (hora_de_banarse == true){
           print("HORAAA");
           emit(DoneState(done: "Ya es hora de bañarse"));
           final player = AudioPlayer();
           await player.setSource(AssetSource('assets/time.mp3'));
           await Future.delayed(Duration(seconds: 5));
           await player.stop();
-        }
+        } */
       }
     } 
     catch (e) {
       print(e);
       emit(UsersErrorState(error: "No se pudo agregar la temperatura"));
     }
+  }
+
+  Future<bool> _timer(bool hora_de_banarse) async {
+    // TIMER FOR VÁLVULA
+    int _recordDuration = 20; //600
+    int _current = 0;
+    Timer? _timer;
+    print("\tRecord duration: $_recordDuration");
+    print("\tStarting timer...");
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      Map<String, dynamic> valvula = await ht.getValvula();  
+      print("VALVULA ${valvula['field5']}"); //field3
+      if (valvula['field5'] == "1"){ //field3
+        print("Hora de bañarse $hora_de_banarse");
+        hora_de_banarse = true;
+      }
+      _current++;
+      print("\t\tTime recorded: $_current");
+      if (_current >= _recordDuration || hora_de_banarse) {
+        _timer?.cancel();
+        _timer = null;
+        _current = 0;
+        print("\t\tTimer cancelled");
+      }
+    });
+    hora_de_banarse = true;
+    Future.delayed(Duration(seconds: 2), () async { //600
+      if (hora_de_banarse) {
+        print("HORA DE BANARSE $hora_de_banarse");
+        final player = AudioPlayer();
+        await player.setSource(AssetSource('time.mp3'));
+        await Future.delayed(Duration(seconds: 5));
+        await player.stop();
+      }
+      else {
+        print("NO ES HORA DE BANARSE $hora_de_banarse");
+      }
+    });
+    //print("Hora de bañarse $hora_de_banarse");
+    return hora_de_banarse;
   }
 
   FutureOr<void> _loadProfiles(UsersLoadEvent event, Emitter<UsersState> emit) async {
@@ -192,6 +248,33 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     try {
       List<dynamic> document = documents[0]['profiles'];
       emit(UsersAddState(profiles: document));
+    } 
+    catch (e) {
+      emit(UsersErrorState(error: "No se encontrar el perfil"));
+    }
+  }
+
+  FutureOr<void> _goToProfile(UsersEventGoTo event, Emitter<UsersState> emit) async {
+    String useruid = UserAuthRepository.userInstance?.currentUser?.uid ?? "";
+    print("User uid: $useruid");
+    if (useruid == "") {
+      return;
+    }
+    final QuerySnapshot result = await FirebaseFirestore.instance
+      .collection('profile')
+      .where('useruid', isEqualTo: useruid)
+      .get();
+    print("result: ${result.docs.length}");
+    final List<DocumentSnapshot> documents = result.docs;
+    if (documents.length == 0) {
+      emit(UsersErrorState(error: "Usuario no encontrado"));
+      return;
+    }
+    try {
+      List<dynamic> document = documents[0]['profiles'];
+      if (document.indexWhere((element) => element['name'] == event.profile) != -1) {
+        emit(UsersGoToState(profile: event.profile));
+      }
     } 
     catch (e) {
       emit(UsersErrorState(error: "No se encontrar el perfil"));

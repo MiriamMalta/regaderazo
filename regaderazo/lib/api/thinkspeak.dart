@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 class APIRepository {
   static final APIRepository _singleton = APIRepository._internal();
-
   factory APIRepository() {
     return _singleton;
   }

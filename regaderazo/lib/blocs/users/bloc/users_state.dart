@@ -48,6 +48,15 @@ class DoneState extends UsersState {
   List<Object> get props => [done];
 }
 
+class UsersGoToState extends UsersState {
+  final String profile;
+
+  UsersGoToState({required this.profile});
+
+  @override
+  List<Object> get props => [profile];
+}
+
 class UsersErrorState extends UsersState {
   final String error;
 
