@@ -31,9 +31,6 @@ class ProfilesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideBar(
-        //sideMenuColor: _primaryColor,
-      ),
       body: Builder(
         builder: (BuildContext context) {
           return Stack(
@@ -389,23 +386,33 @@ class ProfilesPage extends StatelessWidget {
         if (data['profiles'] != null) {
           for (int i = 0; i < data['profiles'].length; i++) {
             if (data['profiles'][i]['admin'] == null && data['profiles'][i]['name'] == name['name']) {
-              print("NORMAL ${data['profiles'][i]}");
+              print("NORMAL ${data['profiles'][i]} ${data['profiles'][i].runtimeType}");
               Navigator.pushReplacement(
                 context, 
                 PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => HomePage2(),
+                    pageBuilder: (context, animation1, animation2) => HomePage2(
+                      profiles: [data['profiles'][i]],
+                    ),
                     transitionDuration: Duration.zero,
                     reverseTransitionDuration: Duration.zero,
                 ),
               );
             }
             if (data['profiles'][i]['admin'] != null && data['profiles'][i]['name'] == name['name']) {
-              print("ADMIN ${data['profiles'][i]}");
-              if (admin) {
+              print("ADMIN ${data['profiles']} ${data['profiles'].runtimeType}");
+              /* if (admin) {
+                List<Map<String, dynamic>> _profiles = [];
+                for (var i = 0; i < data['profiles'].length; i++) {
+                  print(data['profiles'][i]);
+                  _profiles.add(data['profiles'][i] as Map<String, dynamic>);
+                }
+                print("${_profiles} ${_profiles.runtimeType}");
                 Navigator.pushReplacement(
                   context, 
                   PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) => HomePage(),
+                      pageBuilder: (context, animation1, animation2) => HomePage2(
+                        profiles: _profiles,
+                      ),
                       transitionDuration: Duration.zero,
                       reverseTransitionDuration: Duration.zero,
                   ),
@@ -413,8 +420,23 @@ class ProfilesPage extends StatelessWidget {
               }
               else {
                 _goTo(name, context);
+              } */
+              List<Map<String, dynamic>> _profiles = [];
+              for (var i = 0; i < data['profiles'].length; i++) {
+                print(data['profiles'][i]);
+                _profiles.add(data['profiles'][i] as Map<String, dynamic>);
               }
-              //_goTo(name, context);
+              print("${_profiles} ${_profiles.runtimeType}");
+              Navigator.pushReplacement(
+                context, 
+                PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => HomePage2(
+                      profiles: _profiles,
+                    ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                ),
+              );
             } 
           }
         }

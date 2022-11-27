@@ -8,10 +8,16 @@ import '../auth/user_auth_repository.dart';
 import '../blocs/users/bloc/users_bloc.dart';
 import '../config/colors.dart';
 import '../widgets/reusable/division.dart';
-import '../widgets/shared/side_menu.dart';
+import '../widgets/shared/side_menu2.dart';
 
 class HomePage2 extends StatefulWidget {
-  const HomePage2({super.key});
+  HomePage2({
+    Key? key,
+    required List<Map<String, dynamic>> profiles,
+  })  : _profiles = profiles,
+        super(key: key);
+
+  final List<Map<String, dynamic>> _profiles;
 
   @override
   State<HomePage2> createState() => _HomePage2State();
@@ -22,12 +28,15 @@ class _HomePage2State extends State<HomePage2> {
   var queue = Queue<int>.from([-1]); 
   var which = {};
   var temp = null;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    print("INDIIIDE ${widget._profiles}");
     return Scaffold(
-      drawer: SideBar(
-        //sideMenuColor: _primaryColor,
+      key: _scaffoldKey,
+      drawer: SideBar2(
+        profiles: widget._profiles,
       ),
       body: Container(
         child: Padding(
@@ -40,6 +49,17 @@ class _HomePage2State extends State<HomePage2> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    IconButton(
+                      onPressed: (){
+                        print("Side menu");
+                        _scaffoldKey.currentState?.openDrawer();
+                      }, 
+                      icon: Icon(Icons.menu_open), 
+                      color: ColorSelector.getRRed(),
+                    ),
                     IconButton(
                       onPressed: (){
                         print("Home");
@@ -47,7 +67,9 @@ class _HomePage2State extends State<HomePage2> {
                         Navigator.pushReplacement(
                           context, 
                           PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) => HomePage2(),
+                              pageBuilder: (context, animation1, animation2) => HomePage2(
+                                profiles: widget._profiles,
+                              ),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                           ),
@@ -94,7 +116,7 @@ class _HomePage2State extends State<HomePage2> {
                   ),
                   height: MediaQuery.of(context).size.width * 0.6,
                   child: SingleChildScrollView(
-                    child: _listProfiles(),
+                    child: _listProfiles2(widget._profiles),
                   ),
                 ),
                 Row(
@@ -228,7 +250,7 @@ class _HomePage2State extends State<HomePage2> {
     );
   } */
 
-  _listProfiles() {
+  /* _listProfiles() {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
     //CollectionReference profile = user.doc('profile').collection('profile');
     return FutureBuilder<DocumentSnapshot>(
@@ -249,9 +271,9 @@ class _HomePage2State extends State<HomePage2> {
         return Center(child: CircularProgressIndicator());
       },
     );
-  }
+  } */
 
-  Widget _listProfiles2(Map<String, dynamic> data) {
+  Widget _listProfiles2(List<Map<String, dynamic>> data) {
     return Column(        
       children: [
         /*for (int i = 0; i < _profiles.length; i++)
@@ -261,9 +283,9 @@ class _HomePage2State extends State<HomePage2> {
           ),
         */
         // get from firebase
-        for (int i = 0; i < data['profiles'].length; i++)
+        for (int i = 0; i < data.length; i++)
           _character(
-            data['profiles'][i],
+            data[i],
             i,
           ),
       ],

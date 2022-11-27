@@ -28,6 +28,9 @@ dependencies:
   share_plus: 
   equatable:
 
+dependency_overrides:
+  firebase_messaging_platform_interface:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

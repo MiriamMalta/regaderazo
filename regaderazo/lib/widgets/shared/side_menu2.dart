@@ -5,21 +5,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/user_auth_repository.dart';
 import '../../config/colors.dart';
-import '../../screens/account.dart';
-import '../../screens/home_page.dart';
+
+import '../../screens/account2.dart';
+import '../../screens/home_page2.dart';
 import '../../screens/numbers.dart';
 import '../../screens/profiles_page.dart';
-import '../../screens/report.dart';
+import '../../screens/report2.dart';
 
-class SideBar extends StatefulWidget {
-  const SideBar({super.key});
+class SideBar2 extends StatefulWidget {
+  SideBar2({
+    Key? key,
+    required List<Map<String, dynamic>> profiles,
+  })  : _profiles = profiles,
+        super(key: key);
+
+  final List<Map<String, dynamic>> _profiles;
 
   @override
-  State<SideBar> createState() => _SideBarState();
+  State<SideBar2> createState() => _SideBar2State();
 }
 
-class _SideBarState extends State<SideBar> {
-  final _pagesNameList = [
+class _SideBar2State extends State<SideBar2> {
+  /* final _pagesNameList = [
     "Perfiles",
     "Inicio",
     "Reporte",
@@ -35,24 +42,28 @@ class _SideBarState extends State<SideBar> {
   ];
   List<Widget> _pagesList = [
     ProfilesPage(),
-    HomePage(),
+    HomePage2(
+      profiles: help,
+    ),
     Report(),
     Account(),
     Numbers(),
   ];
 
-  static const HOME = '/home';
+  static const HOME2 = '/home2';
   static const REPORT = '/report';
   static const ACCOUNT = '/account';
   static const NUMBERS = '/numbers';
   static const PROFILES = '/profiles';
   static final _pages2 = {
     PROFILES: (context) => ProfilesPage(),
-    HOME: (context) => HomePage(),
+    HOME2: (context) => HomePage2(
+      profiles: help,
+    ),
     REPORT: (context) => Report(),
     ACCOUNT: (context) => Account(),
     NUMBERS: (context) => Numbers(),
-  };
+  }; */
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +145,7 @@ class _SideBarState extends State<SideBar> {
               ),
             ),
           ),
-          Container(
+          /* Container(
             child: Column(
               children: [
                 for (int i = 0; i < _pagesNameList.length; i++)
@@ -171,26 +182,67 @@ class _SideBarState extends State<SideBar> {
                   ),
               ],
             ),
+          ), */
+          ListTile(
+            leading: Icon(Icons.face),
+            title: Text('Perfiles'),
+            onTap: () => {
+              Navigator.pushReplacement(
+                context, 
+                PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => ProfilesPage(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                ),
+              )
+            },
           ),
-          /* ListTile(
+          ListTile(
             leading: Icon(Icons.home),
             title: Text('Inicio'),
             onTap: () => {
-              Navigator.pushNamed(context, '/home'),
+              Navigator.pushReplacement(
+                context, 
+                PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => HomePage2(
+                      profiles: widget._profiles,
+                    ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                ),
+              )
             },
           ),
           ListTile(
             leading: Icon(Icons.analytics),
             title: Text('Reporte'),
             onTap: () => {
-              Navigator.pushNamed(context, '/report'),
+              Navigator.pushReplacement(
+                context, 
+                PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Report2(
+                      profiles: widget._profiles,
+                    ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                ),
+              )
             },
           ),
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text('Cuentas'),
             onTap: () => {
-              Navigator.pushNamed(context, '/account'),
+              Navigator.pushReplacement(
+                context, 
+                PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Account2(
+                      profiles: widget._profiles,
+                    ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                ),
+              )
             },
           ), 
           ListTile(
@@ -199,7 +251,7 @@ class _SideBarState extends State<SideBar> {
             onTap: () => {
               Navigator.of(context).pop()
             },
-          ),*/
+          ),
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Salir de cuenta'),

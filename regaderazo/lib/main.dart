@@ -7,12 +7,14 @@ import 'blocs/temperature/bloc/temperature_bloc.dart';
 import 'blocs/users/bloc/users_bloc.dart';
 
 import 'screens/account.dart';
+import 'screens/account2.dart';
 import 'screens/home_page.dart';
 import 'screens/home_page2.dart';
 import 'screens/log_in/login.dart';
 import 'screens/numbers.dart';
 import 'screens/profiles_page.dart';
 import 'screens/report.dart';
+import 'screens/report2.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,12 +48,20 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/login': (context) => LogInForm(),
-        '/report': (context) => Report(),
         '/home': (context) => HomePage(),
-        '/home2': (context) => HomePage2(),
+        '/home2': (context) => HomePage2(
+          profiles: [],
+        ),
         '/account': (context) => Account(),
+        '/account2': (context) => Account2(
+          profiles: [],
+        ),
         '/numbers': (context) => Numbers(),
         '/profiles': (context) => ProfilesPage(),
+        '/report': (context) => Report(),
+        '/report2': (context) => Report2(
+          profiles: [],
+        ),
       },
       home: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
