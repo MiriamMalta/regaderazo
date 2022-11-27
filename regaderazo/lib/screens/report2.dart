@@ -134,7 +134,7 @@ class _Report2State extends State<Report2> {
                   ],
                 ),
                 Division(),
-                _listProfiles2(widget._profiles),
+                _listProfiles(widget._profiles),
                 //_showReport(),
                 if (which.length == 0) _empty('No hay usuario seleccionado'),
                 if (which.length != 0) _showReport(),
@@ -146,7 +146,7 @@ class _Report2State extends State<Report2> {
     );
   }
 
-  /* Widget _listProfiles() {
+  Widget _listProfiles(List<Map<String, dynamic>> profiles) {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
     //CollectionReference profile = user.doc('profile').collection('profile');
     return FutureBuilder<DocumentSnapshot>(
@@ -161,15 +161,15 @@ class _Report2State extends State<Report2> {
             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
             //print(" data to read ${profile.doc(data!['profile']).get()}");
             if (data?['profiles'].length == 0) return Center(child: Text('No hay usuarios'));
-            if (data != null) return _listProfiles2(data);
+            if (data != null) return _listProfiles2(data, profiles);
           }
         }
         return Center(child: CircularProgressIndicator());
       },
     );
-  } */
+  }
 
-  Widget _listProfiles2(List<Map<String, dynamic>> data) {
+  Widget _listProfiles2(Map<String, dynamic> data, List<Map<String, dynamic>> profiles) {
     return /* Column(        
       children: [
         for (int i = 0; i < data['profiles'].length; i++)
@@ -187,10 +187,12 @@ class _Report2State extends State<Report2> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          for (int i = 0; i < data.length; i++)
+          for (int j = 0; j < data['profiles'].length; j++)
+          for (int i = 0; i < profiles.length; i++)
+          if (data['profiles'][j]['name'] == profiles[i]['name'])
             _character(
-              data[i],
-              i,
+              data['profiles'][j],
+              j,
             ),
         ],
       ),

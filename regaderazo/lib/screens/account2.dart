@@ -168,7 +168,7 @@ class _Account2State extends State<Account2> {
                       ],
                     ),
                     Division(),
-                    _buildList(widget._profiles),
+                    _showFavorites(widget._profiles),
                   ],
                 ),
               ),
@@ -179,7 +179,7 @@ class _Account2State extends State<Account2> {
     );
   }
 
-  /* Widget _showFavorites() {
+  Widget _showFavorites(List<Map<String, dynamic>> profiles) {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
     return FutureBuilder<DocumentSnapshot>(
       future: user.doc(UserAuthRepository().getuid()).get(),
@@ -199,7 +199,7 @@ class _Account2State extends State<Account2> {
               else return Container(
                 child: Column(
                   children: [
-                    _buildList(data['profiles']),
+                    _buildList(data['profiles'], profiles),
                   ],
                 ),
               );
@@ -209,7 +209,7 @@ class _Account2State extends State<Account2> {
         return Center(child: CircularProgressIndicator());
       },
     );
-  } */
+  } 
 
   Container _empty(String text){
     return Container(
@@ -232,7 +232,7 @@ class _Account2State extends State<Account2> {
     );
   }
 
-  Container _buildList(List<dynamic> data) {
+  Container _buildList(List<dynamic> data, List<Map<String, dynamic>> profiles) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
       padding: EdgeInsets.only(
@@ -241,8 +241,10 @@ class _Account2State extends State<Account2> {
       ),
       child: Column(
         children: [
-          for (int i = 0; i < data.length; i++)
-          _buildElement(data[i]),
+          for (int j = 0; j < data.length; j++)
+          for (int i = 0; i < profiles.length; i++)
+            if (data[j]['name'] == profiles[i]['name'])
+              _buildElement(data[j]),
         ]
       ),
     );

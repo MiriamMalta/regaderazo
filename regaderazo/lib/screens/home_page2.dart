@@ -116,7 +116,7 @@ class _HomePage2State extends State<HomePage2> {
                   ),
                   height: MediaQuery.of(context).size.width * 0.6,
                   child: SingleChildScrollView(
-                    child: _listProfiles2(widget._profiles),
+                    child: _listProfiles(widget._profiles),
                   ),
                 ),
                 Row(
@@ -250,7 +250,7 @@ class _HomePage2State extends State<HomePage2> {
     );
   } */
 
-  /* _listProfiles() {
+  _listProfiles(List<Map<String, dynamic>> profiles) {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
     //CollectionReference profile = user.doc('profile').collection('profile');
     return FutureBuilder<DocumentSnapshot>(
@@ -265,15 +265,17 @@ class _HomePage2State extends State<HomePage2> {
             Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
             //print(" data to read ${profile.doc(data!['profile']).get()}");
             if (data?['profiles'].length == 0) return Center(child: Text('No hay usuarios'));
-            if (data != null) return _listProfiles2(data);
+            if (data != null) return _listProfiles2(data, profiles);
           }
         }
         return Center(child: CircularProgressIndicator());
       },
     );
-  } */
+  }
 
-  Widget _listProfiles2(List<Map<String, dynamic>> data) {
+  Widget _listProfiles2(Map<String, dynamic> data, List<Map<String, dynamic>> profiles) {
+    print(profiles.length);
+    print(data['profiles'].length);
     return Column(        
       children: [
         /*for (int i = 0; i < _profiles.length; i++)
@@ -283,11 +285,25 @@ class _HomePage2State extends State<HomePage2> {
           ),
         */
         // get from firebase
-        for (int i = 0; i < data.length; i++)
+        /* for (int i = 0; i < profiles.length; i++)
+          for (int j = 0; j < data['profiles'].length; i++)
+            //if (data['profiles'][j]['name'] == profiles[i]['name'])
+              _character(
+                data['profiles'][j],
+                j,
+              ), */
+        for (int j = 0; j < data['profiles'].length; j++)
+        for (int i = 0; i < profiles.length; i++)
+        if (data['profiles'][j]['name'] == profiles[i]['name'])
           _character(
-            data[i],
-            i,
+            data['profiles'][j],
+            j,
           ),
+        /* for (int i = 0; i < profiles.length; i++)
+          _character(
+            profiles[i],
+            i,
+          ), */
       ],
     );
   }
