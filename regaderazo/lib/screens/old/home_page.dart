@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
-import '../auth/user_auth_repository.dart';
-import '../blocs/users/bloc/users_bloc.dart';
-import '../config/colors.dart';
-import '../widgets/reusable/division.dart';
-import '../widgets/shared/side_menu.dart';
+import '../../auth/user_auth_repository.dart';
+import '../../blocs/users/bloc/users_bloc.dart';
+import '../../config/colors.dart';
+import '../../widgets/reusable/division.dart';
+import '../../widgets/shared/old/side_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

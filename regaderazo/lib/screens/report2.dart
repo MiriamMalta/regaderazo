@@ -28,11 +28,6 @@ class Report2 extends StatefulWidget {
 }
 
 class _Report2State extends State<Report2> {
-  final double temp = PiedadData().getTemperature().last['temperature'];
-  final List<Map<String, dynamic>> data_1 = PiedadData().getTemperature();
-  final List<Map<String, dynamic>> data_2 = PiedadData().getDay();
-  final List<Map<String, dynamic>> data_3 = PiedadData().getMonth();
-
   var slider = false;
   var queue = Queue<int>.from([-1]); 
   var which = {};
@@ -398,7 +393,7 @@ class _Report2State extends State<Report2> {
     return list;
   }
 
-  _getDayChart () {
+  /* _getDayChart () {
     List<SplineAreaData> list = [];
     for(var i = data_2.length - 7; i < data_2.length; i++) {
       list.add(SplineAreaData(data_2[i]['day'], data_2[i]['saving'], data_2[i]['total']));
@@ -412,5 +407,5 @@ class _Report2State extends State<Report2> {
       list.add(SplineAreaData(data_3[i]['month'], data_3[i]['saving'], data_3[i]['total']));
     }
     return list;
-  }
+  } */
 }

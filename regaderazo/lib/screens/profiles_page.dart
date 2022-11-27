@@ -8,8 +8,8 @@ import '../auth/user_auth_repository.dart';
 import '../blocs/users/bloc/users_bloc.dart';
 import '../config/colors.dart';
 import '../widgets/reusable/division.dart';
-import '../widgets/shared/side_menu.dart';
-import 'home_page.dart';
+import '../widgets/shared/old/side_menu.dart';
+import 'old/home_page.dart';
 import 'home_page2.dart';
 
 class ProfilesPage extends StatelessWidget {

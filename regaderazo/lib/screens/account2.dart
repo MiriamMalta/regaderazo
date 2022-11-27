@@ -37,41 +37,6 @@ class _Account2State extends State<Account2> {
     "0xFFE0B1CB",
   ];
 
-  /* List<Map<String, dynamic>> _profiles = [
-    {
-      "name": PiedadData().getName(),
-      "color": PiedadData().getColor(),
-      "temperature": PiedadData().getTemperature().last['temperature'],
-      "temp_data": PiedadData().getTemperature(),
-      "day_data": PiedadData().getDay(),
-      "month_data": PiedadData().getMonth(),
-    },
-    {
-      "name": ClementeData().getName(),
-      "color": ClementeData().getColor(),
-      "temperature": ClementeData().getTemperature().last['temperature'],
-      "temp_data": ClementeData().getTemperature(),
-      "day_data": ClementeData().getDay(),
-      "month_data": ClementeData().getMonth(),
-    },
-    {
-      "name": LeonorData().getName(),
-      "color": LeonorData().getColor(),
-      "temperature": LeonorData().getTemperature().last['temperature'],
-      "temp_data": LeonorData().getTemperature(),
-      "day_data": LeonorData().getDay(),
-      "month_data": LeonorData().getMonth(),
-    },
-    {
-      "name": PedroData().getName(),
-      "color": PedroData().getColor(),
-      "temperature": PedroData().getTemperature().last['temperature'],
-      "temp_data": PedroData().getTemperature(),
-      "day_data": PedroData().getDay(),
-      "month_data": PedroData().getMonth(),
-    },
-  ]; */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

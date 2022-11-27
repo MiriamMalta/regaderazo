@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../auth/user_auth_repository.dart';
-import '../blocs/users/bloc/users_bloc.dart';
-import '../config/colors.dart';
-import '../models/temperature.dart';
-import '../widgets/reusable/column_chart.dart';
-import '../widgets/reusable/division.dart';
-import '../widgets/shared/side_menu.dart';
+import '../../auth/user_auth_repository.dart';
+import '../../blocs/users/bloc/users_bloc.dart';
+import '../../config/colors.dart';
+import '../../models/temperature.dart';
+import '../../widgets/reusable/column_chart.dart';
+import '../../widgets/reusable/division.dart';
+import '../../widgets/shared/old/side_menu.dart';
 import 'home_page.dart';
 
 class Account extends StatefulWidget {

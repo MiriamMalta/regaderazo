@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../auth/bloc/auth_bloc.dart';
-import '../../auth/user_auth_repository.dart';
-import '../../config/colors.dart';
-import '../../screens/account.dart';
-import '../../screens/home_page.dart';
-import '../../screens/numbers.dart';
-import '../../screens/profiles_page.dart';
-import '../../screens/report.dart';
+import '../../../auth/bloc/auth_bloc.dart';
+import '../../../auth/user_auth_repository.dart';
+import '../../../config/colors.dart';
+import '../../../screens/old/account.dart';
+import '../../../screens/old/home_page.dart';
+import '../../../screens/numbers.dart';
+import '../../../screens/profiles_page.dart';
+import '../../../screens/old/report.dart';
 
 class SideBar extends StatefulWidget {
   const SideBar({super.key});

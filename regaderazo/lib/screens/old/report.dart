@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:regaderazo/data/piedad.dart';
 import 'package:regaderazo/models/slean.dart';
 
-import '../auth/user_auth_repository.dart';
-import '../config/colors.dart';
-import '../models/temperature.dart';
-import '../widgets/reusable/spline_area.dart';
-import '../widgets/reusable/column_chart.dart';
-import '../widgets/reusable/division.dart';
-import '../widgets/shared/side_menu.dart';
+import '../../auth/user_auth_repository.dart';
+import '../../config/colors.dart';
+import '../../models/temperature.dart';
+import '../../widgets/reusable/spline_area.dart';
+import '../../widgets/reusable/column_chart.dart';
+import '../../widgets/reusable/division.dart';
+import '../../widgets/shared/old/side_menu.dart';
 import 'home_page.dart';
 
 class Report extends StatefulWidget {

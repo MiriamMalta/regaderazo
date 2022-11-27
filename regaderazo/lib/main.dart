@@ -6,14 +6,14 @@ import 'auth/bloc/auth_bloc.dart';
 import 'blocs/temperature/bloc/temperature_bloc.dart';
 import 'blocs/users/bloc/users_bloc.dart';
 
-import 'screens/account.dart';
+import 'screens/old/account.dart';
 import 'screens/account2.dart';
-import 'screens/home_page.dart';
+import 'screens/old/home_page.dart';
 import 'screens/home_page2.dart';
 import 'screens/log_in/login.dart';
 import 'screens/numbers.dart';
 import 'screens/profiles_page.dart';
-import 'screens/report.dart';
+import 'screens/old/report.dart';
 import 'screens/report2.dart';
 
 void main() async {
