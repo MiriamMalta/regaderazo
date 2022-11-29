@@ -27,15 +27,7 @@ class Account2 extends StatefulWidget {
 class _Account2State extends State<Account2> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  List _colors = [
-    "0xFF000000",
-    "0xFF5E548E",
-    "0xFF9B90C2",
-    "0xFF9F86C0",
-    "0xFFA87DC2",
-    "0xFFBE95C4",
-    "0xFFE0B1CB",
-  ];
+  List _colors = ColorSelector.getList();
 
   @override
   Widget build(BuildContext context) {

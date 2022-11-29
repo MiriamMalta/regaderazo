@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -137,8 +138,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         print(temperature);
         // TIMER FOR VÁLVULA
         //bool hora_de_banarse = await _timer(false);
-        bool hora_de_banarse = await _timer(false);
-        print("aaaa: $hora_de_banarse");
+        //bool hora_de_banarse = await _timer(false);
+        //print("aaaa: $hora_de_banarse");
         /* Future.delayed(Duration(seconds: 20), () async { //600
           if (hora_de_banarse) {
             print("HORA DE BANARSE");
@@ -181,6 +182,41 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           await Future.delayed(Duration(seconds: 5));
           await player.stop();
         } */
+        int _recordDuration = 40; //600
+        int _current = 0;
+        bool hora_de_banarse = false;
+        Timer? _timer;
+        CancelableOperation? _myCancelableFuture;
+        print("\tRecord duration: $_recordDuration");
+        print("\tStarting timer...");
+        _timer = await Timer.periodic(Duration(seconds: 1), (timer) async {
+          Map<String, dynamic> valvula = await ht.getValvula();  
+          print("VALVULA ${valvula['field5']}"); //field3
+          if (valvula['field5'] == "1"){ //field3
+            print("Hora de bañarse $hora_de_banarse");
+            hora_de_banarse = true;
+            final player = AudioPlayer();
+            await player.play(AssetSource('time.mp3'));
+            await Future.delayed(Duration(seconds: 4));
+            await player.stop();
+          }
+          _current++;
+          print("\t\tTime recorded: $_current");
+          if (_current >= _recordDuration || hora_de_banarse) {
+            _timer?.cancel();
+            _timer = null;
+            _current = 0;
+            print("\t\tTimer cancelled");
+          }
+        });
+        _myCancelableFuture = CancelableOperation.fromFuture(
+          _time(hora_de_banarse),
+          onCancel: () { 
+            print("CANCELLED");
+            emit (DoneState(done: "Ya es hora de bañarse"));
+          }
+        );
+        //emit (DoneState(done: "Ya es hora de bañarse"));
       }
     } 
     catch (e) {
@@ -191,17 +227,41 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<bool> _timer(bool hora_de_banarse) async {
     // TIMER FOR VÁLVULA
-    int _recordDuration = 20; //600
+    int _recordDuration = 40; //600
     int _current = 0;
     Timer? _timer;
     print("\tRecord duration: $_recordDuration");
     print("\tStarting timer...");
+    CancelableOperation? _myCancelableFuture;
+    _myCancelableFuture = CancelableOperation.fromFuture(
+      /* Future.delayed(Duration(seconds: 30), () async { //600
+        if (hora_de_banarse) {
+          print("HORA DE BANARSE");
+          /* emit(DoneState(done: "Ya es hora de bañarse"));
+          final player = AudioPlayer();
+          await player.setSource(AssetSource('assets/time.mp3'));
+          await Future.delayed(Duration(seconds: 5));
+          await player.stop(); */
+        }
+        else {
+          print("NO ES HORA DE BANARSE");
+        }
+      } */
+      _time(hora_de_banarse),
+      onCancel: () => print("Cancelled"),
+    );
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       Map<String, dynamic> valvula = await ht.getValvula();  
       print("VALVULA ${valvula['field5']}"); //field3
       if (valvula['field5'] == "1"){ //field3
         print("Hora de bañarse $hora_de_banarse");
         hora_de_banarse = true;
+        _myCancelableFuture?.cancel();
+        emit (DoneState(done: "Ya es hora de bañarse"));
+        final player = AudioPlayer();
+        await player.play(AssetSource('time.mp3'));
+        await Future.delayed(Duration(seconds: 5));
+        await player.stop();
       }
       _current++;
       print("\t\tTime recorded: $_current");
@@ -212,21 +272,27 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         print("\t\tTimer cancelled");
       }
     });
-    hora_de_banarse = true;
-    Future.delayed(Duration(seconds: 2), () async { //600
+    
+    //print("Hora de bañarse $hora_de_banarse");
+    return hora_de_banarse;
+  }
+
+  Future<bool?> _time(hora_de_banarse) async {
+    print(hora_de_banarse);
+    await Future.delayed(Duration(seconds: 30), () async { //600
       if (hora_de_banarse) {
         print("HORA DE BANARSE $hora_de_banarse");
-        final player = AudioPlayer();
-        await player.setSource(AssetSource('time.mp3'));
+        /* final player = AudioPlayer();
+        await player.play(AssetSource('time.mp3'));
         await Future.delayed(Duration(seconds: 5));
-        await player.stop();
+        await player.stop(); */
+        return true;
       }
       else {
         print("NO ES HORA DE BANARSE $hora_de_banarse");
+        return false;
       }
     });
-    //print("Hora de bañarse $hora_de_banarse");
-    return hora_de_banarse;
   }
 
   FutureOr<void> _loadProfiles(UsersLoadEvent event, Emitter<UsersState> emit) async {

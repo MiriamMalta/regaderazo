@@ -256,7 +256,8 @@ class _SideBar2State extends State<SideBar2> {
             leading: Icon(Icons.logout),
             title: Text('Salir de cuenta'),
             onTap: () => {
-              BlocProvider.of<AuthBloc>(context).add(SignOutEvent())
+              Navigator.of(context).pop(),
+              BlocProvider.of<AuthBloc>(context).add(SignOutEvent()),
             },
           ),
           SizedBox(

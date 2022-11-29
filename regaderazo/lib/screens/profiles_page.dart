@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
+import '../auth/bloc/auth_bloc.dart';
 import '../auth/user_auth_repository.dart';
 import '../blocs/users/bloc/users_bloc.dart';
 import '../config/colors.dart';
@@ -90,8 +91,8 @@ class ProfilesPage extends StatelessWidget {
                   width: MediaQuery.of(context).size.height * 0.07,
                   child: FloatingActionButton(
                     heroTag: "btn1",
-                    backgroundColor: Colors.green,
-                    splashColor: Colors.greenAccent,
+                    backgroundColor: ColorSelector.getRBlue(),
+                    splashColor: ColorSelector.getRRed(),
                     onPressed: () {
                       _adminORnormal(context);
                     },
@@ -104,71 +105,32 @@ class ProfilesPage extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.035,
+                left: MediaQuery.of(context).size.height * 0.035,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  width: MediaQuery.of(context).size.height * 0.07,
+                  child: FloatingActionButton(
+                    heroTag: "btn2",
+                    backgroundColor: ColorSelector.getRRed(),
+                    splashColor: ColorSelector.getRBlue(),
+                    onPressed: () {
+                      BlocProvider.of<AuthBloc>(context).add(SignOutEvent());
+                    },
+                    child: Icon(
+                      //Icons.photo_camera_outlined,
+                      Icons.logout,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.height * 0.045,
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         }
       ),
-    );
-  }
-
-  
-
-  _adminO(context) {
-    CollectionReference user = FirebaseFirestore.instance.collection('profile');
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('¿Quién eres?'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _admin,
-                decoration: InputDecoration(
-                  hintText: 'Usuario',
-                ),
-              ),
-              TextField(
-                controller: _password,
-                decoration: InputDecoration(
-                  hintText: 'Contraseña',
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _clearText();
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                user
-                  .where('user', isEqualTo: _admin.text)
-                  .where('password', isEqualTo: _password.text)
-                  .get()
-                  .then((QuerySnapshot querySnapshot) {
-                    querySnapshot.docs.forEach((doc) {
-                      if (doc.exists) {
-                        _clearText();
-                        Navigator.of(context).pop();
-                      } else {
-                        _clearText();
-                        Navigator.of(context).pop();
-                        _adminORnormal(context);
-                      }
-                    });
-                  });
-              },
-              child: Text('Aceptar'),
-            ),
-          ],
-        );
-      }
     );
   }
 
@@ -269,6 +231,9 @@ class ProfilesPage extends StatelessWidget {
         }, 
         style: ElevatedButton.styleFrom(
           backgroundColor: ColorSelector.getGreyish(), // Background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
         ),
         child: Container(
           width: MediaQuery.of(context).size.width * 0.6,
@@ -320,6 +285,8 @@ class ProfilesPage extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Contraseña de admin",
                 ),
+                keyboardType: TextInputType.number,
+                maxLength: 6,
               ),
             ],
           ),
@@ -400,7 +367,7 @@ class ProfilesPage extends StatelessWidget {
             }
             if (data['profiles'][i]['admin'] != null && data['profiles'][i]['name'] == name['name']) {
               print("ADMIN ${data['profiles']} ${data['profiles'].runtimeType}");
-              /* if (admin) {
+              if (admin) {
                 List<Map<String, dynamic>> _profiles = [];
                 for (var i = 0; i < data['profiles'].length; i++) {
                   print(data['profiles'][i]);
@@ -420,8 +387,8 @@ class ProfilesPage extends StatelessWidget {
               }
               else {
                 _goTo(name, context);
-              } */
-              List<Map<String, dynamic>> _profiles = [];
+              }
+              /* List<Map<String, dynamic>> _profiles = [];
               for (var i = 0; i < data['profiles'].length; i++) {
                 print(data['profiles'][i]);
                 _profiles.add(data['profiles'][i] as Map<String, dynamic>);
@@ -436,7 +403,7 @@ class ProfilesPage extends StatelessWidget {
                     transitionDuration: Duration.zero,
                     reverseTransitionDuration: Duration.zero,
                 ),
-              );
+              ); */
             } 
           }
         }
@@ -515,6 +482,8 @@ class ProfilesPage extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "Contraseña",
                 ),
+                keyboardType: TextInputType.number,
+                maxLength: 6,
               ),
             ],
           ),
@@ -529,6 +498,7 @@ class ProfilesPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 print(_controller.text);
+                print(_admin.text.runtimeType);
                 BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text, admin: _admin.text));
                 _clearText;
                 Navigator.of(context).pop();
