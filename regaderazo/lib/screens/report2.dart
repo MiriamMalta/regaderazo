@@ -32,12 +32,12 @@ class _Report2State extends State<Report2> {
   var queue = Queue<int>.from([-1]); 
   var which = {};
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyR = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyR,
       drawer: SideBar2(
         profiles: widget._profiles,
       ),
@@ -58,7 +58,7 @@ class _Report2State extends State<Report2> {
                     IconButton(
                       onPressed: (){
                         print("Side menu");
-                        _scaffoldKey.currentState?.openDrawer();
+                        _scaffoldKeyR.currentState?.openDrawer();
                       }, 
                       icon: Icon(Icons.menu_open), 
                       color: ColorSelector.getRRed(),

@@ -13,7 +13,7 @@ class APIRepository {
 
   Future<dynamic> putTemp(String temp) async {
     // TODO: change field 4 to field 1
-    Uri path = Uri.parse('https://api.thingspeak.com/update?api_key=EADNROT3DL06KNSR&field4=' + temp);
+    Uri path = Uri.parse('https://api.thingspeak.com/update?api_key=EADNROT3DL06KNSR&field1=' + temp);
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -36,7 +36,7 @@ class APIRepository {
     }
   }
 
-  Future<dynamic> getTemp() async {
+  /* Future<dynamic> getTemp() async {
     Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/1.json?api_key=YWOJUI2OQGO78WME&results');
     var response = await http.get(path);
     if (response.statusCode == 200) {
@@ -46,7 +46,7 @@ class APIRepository {
     } else {
       throw Exception('Failed to load data');
     }
-  }
+  } */
 
   Future<dynamic> getPresion() async {
     Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/2.json?api_key=YWOJUI2OQGO78WME&results');
@@ -75,8 +75,9 @@ class APIRepository {
     }
   }
 
-  Future<dynamic> getTest() async {
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/4.json?api_key=YWOJUI2OQGO78WME&results');
+  Future<dynamic> getTemp() async {
+    //TODO: change field 4 to field 1
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/1.json?api_key=YWOJUI2OQGO78WME&results');
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);

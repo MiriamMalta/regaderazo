@@ -31,6 +31,7 @@ dependencies:
 
 dependency_overrides:
   firebase_messaging_platform_interface:
+  firebase_storage_platform_interface:
 
 dev_dependencies:
   flutter_test:

@@ -28,13 +28,13 @@ class _HomePage2State extends State<HomePage2> {
   var queue = Queue<int>.from([-1]); 
   var which = {};
   var temp = null;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyH = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     print("INDIIIDE ${widget._profiles}");
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyH,
       drawer: SideBar2(
         profiles: widget._profiles,
       ),
@@ -55,7 +55,7 @@ class _HomePage2State extends State<HomePage2> {
                     IconButton(
                       onPressed: (){
                         print("Side menu");
-                        _scaffoldKey.currentState?.openDrawer();
+                        _scaffoldKeyH.currentState?.openDrawer();
                       }, 
                       icon: Icon(Icons.menu_open), 
                       color: ColorSelector.getRRed(),

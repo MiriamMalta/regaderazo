@@ -25,14 +25,14 @@ class Account2 extends StatefulWidget {
 }
 
 class _Account2State extends State<Account2> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyA = new GlobalKey<ScaffoldState>();
 
   List _colors = ColorSelector.getList();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyA,
       drawer: SideBar2(
         profiles: widget._profiles,
       ),
@@ -55,7 +55,7 @@ class _Account2State extends State<Account2> {
                         IconButton(
                           onPressed: (){
                             print("Side menu");
-                            _scaffoldKey.currentState?.openDrawer();
+                            _scaffoldKeyA.currentState?.openDrawer();
                           }, 
                           icon: Icon(Icons.menu_open), 
                           color: ColorSelector.getRRed(),

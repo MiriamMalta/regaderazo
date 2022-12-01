@@ -133,7 +133,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         emit(UsersAddState(profiles: document)); 
         // SEND TO THINKSPEAK
         await ht.putTemp(event.temperature);
-        List<Map<String, dynamic>> allData = await ht.getTest();  
+        List<Map<String, dynamic>> allData = await ht.getTemp();  
         print("DATAAA $allData");
         print(temperature);
         // TIMER FOR VÁLVULA
@@ -182,7 +182,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           await Future.delayed(Duration(seconds: 5));
           await player.stop();
         } */
-        int _recordDuration = 40; //600
+        int _recordDuration = 10; //600
         int _current = 0;
         bool hora_de_banarse = false;
         Timer? _timer;
@@ -279,7 +279,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<bool?> _time(hora_de_banarse) async {
     print(hora_de_banarse);
-    await Future.delayed(Duration(seconds: 30), () async { //600
+    await Future.delayed(Duration(seconds: 10), () async { //600
       if (hora_de_banarse) {
         print("HORA DE BANARSE $hora_de_banarse");
         /* final player = AudioPlayer();

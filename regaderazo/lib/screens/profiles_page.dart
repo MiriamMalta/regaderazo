@@ -13,18 +13,25 @@ import '../widgets/shared/old/side_menu.dart';
 import 'old/home_page.dart';
 import 'home_page2.dart';
 
-class ProfilesPage extends StatelessWidget {
+class ProfilesPage extends StatefulWidget {
+  @override
+  State<ProfilesPage> createState() => _ProfilesPageState();
+}
+
+class _ProfilesPageState extends State<ProfilesPage> {
   var slider = false;
   var queue = Queue<int>.from([-1]); 
   var which = {};
   var temp = null;
 
   TextEditingController _controller = TextEditingController();
+
   void _clearText() {
     _controller.clear();
     _admin.clear();
     _password.clear();
   }
+
   bool isChecked = false;
   TextEditingController _admin = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -127,6 +134,37 @@ class ProfilesPage extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.035,
+                left: MediaQuery.of(context).size.width * 0.45,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  width: MediaQuery.of(context).size.height * 0.07,
+                  child: FloatingActionButton(
+                    heroTag: "btn3",
+                    backgroundColor: Colors.green,
+                    splashColor: Colors.lightGreen,
+                    onPressed: () {
+                      print("reload");
+                      Navigator.pushReplacement(
+                        context, 
+                        PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) => ProfilesPage(
+                            ),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      //Icons.photo_camera_outlined,
+                      Icons.replay,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.height * 0.045,
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         }
@@ -215,7 +253,6 @@ class ProfilesPage extends StatelessWidget {
       ),
     );
   } */
-
   Widget _character(Map<String, dynamic> profile, int index, BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -269,7 +306,6 @@ class ProfilesPage extends StatelessWidget {
     }
     return Colors.red;
   } */
-
   _goTo (Map<String, dynamic> admin, BuildContext context) {
     return showDialog(
       context: context,
@@ -502,9 +538,28 @@ class ProfilesPage extends StatelessWidget {
                 BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text, admin: _admin.text));
                 _clearText;
                 Navigator.of(context).pop();
+                /* Navigator.pushReplacement(
+                  context, 
+                  PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => ProfilesPage(
+                      ),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                  ),
+                ); */
               }, 
               child: Text("Aceptar")
             ),
+            /* TextButton(
+              onPressed: () {
+                print(_controller.text);
+                print(_admin.text.runtimeType);
+                BlocProvider.of<UsersBloc>(context).add(UsersEventCreateTo(profiles: _controller.text, admin: _admin.text));
+                _clearText;
+                Navigator.of(context).pop();
+              }, 
+              child: Text("Aceptar")
+            ), */
           ],
         );
       }
@@ -551,5 +606,4 @@ class ProfilesPage extends StatelessWidget {
       }
     );
   }
-
 }
