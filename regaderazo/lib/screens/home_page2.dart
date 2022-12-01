@@ -429,35 +429,70 @@ class _HomePage2State extends State<HomePage2> {
     else {
       initial = 0.0;
     } 
-    return SleekCircularSlider(
-      min: -10.0,
-      max: 50.0,
-      initialValue: initial,
-      appearance: CircularSliderAppearance(
-        angleRange: 360,
-        startAngle: 180,
-        size: MediaQuery.of(context).size.width * 0.55,
-      ),
-      /* onChange: (double value) {
-        print(value);
-      }, */
-      onChangeEnd: (double value) {
-        print(value);
-        temp = value;
-      },
-      innerWidget: (double value) {
-        return Container(
-          alignment: Alignment.center,
-          child: Text(
-            "${value.toStringAsFixed(1)}°C",
-            style: TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-              color: ColorSelector.getRRed(),
+    print("QUEUEE ${queue.length}");
+    if (queue.length > 1){
+      return SleekCircularSlider(
+        min: -10.0,
+        max: 50.0,
+        initialValue: initial,
+        appearance: CircularSliderAppearance(
+          angleRange: 360,
+          startAngle: 180,
+          size: MediaQuery.of(context).size.width * 0.55,
+        ),
+        /* onChange: (double value) {
+          print(value);
+        }, */
+        onChangeEnd: (double value) {
+          print(value);
+          temp = value;
+        },
+        innerWidget: (double value) {
+          return Container(
+            alignment: Alignment.center,
+            child: Text(
+              "${value.toStringAsFixed(1)}°C",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: ColorSelector.getRRed(),
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    }
+    else {
+      return SleekCircularSlider(
+        min: -10.0,
+        max: 50.0,
+        initialValue: initial,
+        appearance: CircularSliderAppearance(
+          angleRange: 360,
+          startAngle: 180,
+          size: MediaQuery.of(context).size.width * 0.55,
+        ),
+        /* onChange: (double value) {
+          print(value);
+        }, */
+        onChangeEnd: (double value) {
+          print(value);
+          temp = value;
+        },
+        innerWidget: (double value) {
+          return Container(
+            alignment: Alignment.center,
+            child: Text(
+              "${value.toStringAsFixed(1)}°C",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: ColorSelector.getRRed(),
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 }

@@ -381,7 +381,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
     );
   }
 
-  _goToNormal(BuildContext context, Map<String, dynamic> name, bool admin) {
+  _goToNormal(BuildContext _context, Map<String, dynamic> name, bool admin) {
     CollectionReference user = FirebaseFirestore.instance.collection('profile');
     user.doc(UserAuthRepository().getuid()).get().then(
       (DocumentSnapshot doc) {
@@ -393,7 +393,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
               Navigator.pushReplacement(
                 context, 
                 PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => HomePage2(
+                    pageBuilder: (_context, animation1, animation2) => HomePage2(
                       profiles: [data['profiles'][i]],
                     ),
                     transitionDuration: Duration.zero,
@@ -413,7 +413,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
                 Navigator.pushReplacement(
                   context, 
                   PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) => HomePage2(
+                      pageBuilder: (_context, animation1, animation2) => HomePage2(
                         profiles: _profiles,
                       ),
                       transitionDuration: Duration.zero,
