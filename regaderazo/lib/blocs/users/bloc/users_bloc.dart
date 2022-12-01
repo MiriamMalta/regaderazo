@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
+
 
 import '../../../api/thinkspeak.dart';
 import '../../../auth/user_auth_repository.dart';
@@ -199,6 +201,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             await player.play(AssetSource('time.mp3'));
             await Future.delayed(Duration(seconds: 4));
             await player.stop();
+            HapticFeedback.vibrate();
+            HapticFeedback.lightImpact();
           }
           _current++;
           print("\t\tTime recorded: $_current");
