@@ -177,38 +177,72 @@ class _HomePage2State extends State<HomePage2> {
                     child: _slider2 ()
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    print("index ${queue.first} temp: $temp");
-                    if (queue.first < 0) {
-                      ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(content: Text('No has seleccionado un perfil')),
-                      );
-                    }
-                    if (temp == 0){
-                      ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(content: Text('La temperatura es 0')),
-                      );
-                    }
-                    if (queue.first > -1 && temp != null && temp != 0) {
-                      BlocProvider.of<UsersBloc>(context).add(UsersAddTemperatureEvent(
-                        profile: which['name'],
-                        temperature: temp.toString(),
-                      ));
-                      ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(content: Text('Se ha iniciado el regaderazo con ${temp.toStringAsFixed(1)}°C')),
-                      );
-                    }
-                    temp = null;
-                  }, 
-                  child: Text("Iniciar regadera")
-                  )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    /* ElevatedButton(
+                      onPressed: (){
+                          print("Start");
+                      }, 
+                      child: Text('Iniciar ahora!'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorSelector.getRRed(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                          vertical: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                    ), */
+                    ElevatedButton(
+                      onPressed: () {
+                        print("index ${queue.first} temp: $temp");
+                        if (queue.first < 0) {
+                          ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(content: Text('No has seleccionado un perfil')),
+                          );
+                        }
+                        if (temp == 0){
+                          ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(content: Text('La temperatura es 0')),
+                          );
+                        }
+                        if (queue.first > -1 && temp != null && temp != 0) {
+                          BlocProvider.of<UsersBloc>(context).add(UsersAddTemperatureEvent(
+                            profile: which['name'],
+                            temperature: temp.toString(),
+                          ));
+                          ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(content: Text('Se ha iniciado el regaderazo con ${temp.toStringAsFixed(1)}°C')),
+                          );
+                        }
+                        temp = null;
+                      }, 
+                      child: Text("Iniciar regaderazo!"),
+                      /* style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorSelector.getRBlue(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                          vertical: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                      ), */
+                    ),
+                  ],
+                )
               ],
             ),
           ),

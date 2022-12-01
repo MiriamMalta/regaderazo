@@ -182,7 +182,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           await Future.delayed(Duration(seconds: 5));
           await player.stop();
         } */
-        int _recordDuration = 10; //600
+        int _recordDuration = 600; //600 = 10 minutos
         int _current = 0;
         bool hora_de_banarse = false;
         Timer? _timer;
@@ -191,8 +191,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         print("\tStarting timer...");
         _timer = await Timer.periodic(Duration(seconds: 1), (timer) async {
           Map<String, dynamic> valvula = await ht.getValvula();  
-          print("VALVULA ${valvula['field5']}"); //field3
-          if (valvula['field5'] == "1"){ //field3
+          print("VALVULA ${valvula['field3']}"); //field3
+          if (valvula['field3'] == "1"){ //field3
             print("Hora de bañarse $hora_de_banarse");
             hora_de_banarse = true;
             final player = AudioPlayer();
@@ -227,7 +227,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<bool> _timer(bool hora_de_banarse) async {
     // TIMER FOR VÁLVULA
-    int _recordDuration = 40; //600
+    int _recordDuration = 600; //600 = 10 minutos
     int _current = 0;
     Timer? _timer;
     print("\tRecord duration: $_recordDuration");
@@ -279,7 +279,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
   Future<bool?> _time(hora_de_banarse) async {
     print(hora_de_banarse);
-    await Future.delayed(Duration(seconds: 10), () async { //600
+    await Future.delayed(Duration(seconds: 600), () async { //600 = 10 minutos
       if (hora_de_banarse) {
         print("HORA DE BANARSE $hora_de_banarse");
         /* final player = AudioPlayer();

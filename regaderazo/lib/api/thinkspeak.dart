@@ -12,8 +12,9 @@ class APIRepository {
   APIRepository._internal();
 
   Future<dynamic> putTemp(String temp) async {
-    // TODO: change field 4 to field 1
-    Uri path = Uri.parse('https://api.thingspeak.com/update?api_key=EADNROT3DL06KNSR&field4=' + temp);
+    // TODO: Mine EADNROT3DL06KNSR field 1
+    // TODO: Tsip HXXCY391D2TWZCYY field 2
+    Uri path = Uri.parse('https://api.thingspeak.com/update?api_key=EADNROT3DL06KNSR&field1=' + temp);
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -25,7 +26,9 @@ class APIRepository {
   }
 
   Future<dynamic> getAll() async {
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/feeds.json?api_key=YWOJUI2OQGO78WME&results');
+    // TODO: Mine YWOJUI2OQGO78WME
+    // TODO: Tsip GMT4V4X3NB4L14X4
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1916671/feeds.json?api_key=GMT4V4X3NB4L14X4&results');
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -48,21 +51,17 @@ class APIRepository {
     }
   } */
 
-  Future<dynamic> getPresion() async {
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/2.json?api_key=YWOJUI2OQGO78WME&results');
+  Future<dynamic> getFlujo() async {
+    // TODO: Mine YWOJUI2OQGO78WME
+    // TODO: Tsip GMT4V4X3NB4L14X4
+    // https://api.thingspeak.com/channels/1916671/fields/1.json?api_key=GMT4V4X3NB4L14X4&results
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1916671/fields/1.json?results=');
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
       return data;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-  Future<dynamic> getValvula() async {
-    // TODO: change field 5 to field 3
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/5.json?api_key=YWOJUI2OQGO78WME&results');
+    /*
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -70,14 +69,17 @@ class APIRepository {
       List list = map['feeds'];
       List<Map<String, dynamic>> listFull = list.map((e) => e as Map<String, dynamic>).toList();
       return listFull.last;
+    */
     } else {
       throw Exception('Failed to load data');
     }
   }
 
   Future<dynamic> getTemp() async {
-    //TODO: change field 4 to field 1
-    Uri path = Uri.parse('https://api.thingspeak.com/channels/1934178/fields/4.json?api_key=YWOJUI2OQGO78WME&results');
+    // TODO: Mine YWOJUI2OQGO78WME field 1
+    // TODO: Tsip GMT4V4X3NB4L14X4 field 2
+    // https://api.thingspeak.com/channels/1916671/fields/2.json?api_key=GMT4V4X3NB4L14X4&results
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1916671/fields/2.json?results=');
     var response = await http.get(path);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -90,6 +92,23 @@ class APIRepository {
       } */
       //print("LIST $list2");
       return listFull;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<dynamic> getValvula() async {
+    // TODO: Mine YWOJUI2OQGO78WME field 3
+    // TODO: Tsip GMT4V4X3NB4L14X4 field 3
+    // https://api.thingspeak.com/channels/1916671/fields/3.json?api_key=GMT4V4X3NB4L14X4&results
+    Uri path = Uri.parse('https://api.thingspeak.com/channels/1916671/fields/3.json?results=');
+    var response = await http.get(path);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      Map map = data;
+      List list = map['feeds'];
+      List<Map<String, dynamic>> listFull = list.map((e) => e as Map<String, dynamic>).toList();
+      return listFull.last;
     } else {
       throw Exception('Failed to load data');
     }

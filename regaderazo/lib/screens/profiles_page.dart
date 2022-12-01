@@ -146,7 +146,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
                     splashColor: Colors.lightGreen,
                     onPressed: () {
                       print("reload");
-                      Navigator.pushReplacement(
+                      /* Navigator.pushReplacement(
                         context, 
                         PageRouteBuilder(
                             pageBuilder: (context, animation1, animation2) => ProfilesPage(
@@ -154,7 +154,8 @@ class _ProfilesPageState extends State<ProfilesPage> {
                             transitionDuration: Duration.zero,
                             reverseTransitionDuration: Duration.zero,
                         ),
-                      );
+                      ); */
+                      setState(() {});
                     },
                     child: Icon(
                       //Icons.photo_camera_outlined,

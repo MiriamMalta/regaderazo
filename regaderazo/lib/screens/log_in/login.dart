@@ -70,15 +70,22 @@ class _LogInFormState extends State<LogInForm> {
             height: MediaQuery.of(context).size.height * 0.01,
           ),
           ButtonLog(
-              context: context,
-              background: _red,
-              splash: _blue,
-              text_color: Colors.white,
-              text: "Acceder",
-              onPressed: () {
-                Navigator.pushNamed(context, '/report');
-              }
-            ),
+            context: context,
+            background: _red,
+            splash: _blue,
+            text_color: Colors.white,
+            text: "Acceder",
+            onPressed: () {
+              //Navigator.pushNamed(context, '/report');
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text("Actualmente este login esta desabilitado"),
+                  ),
+                );
+            }
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.01,
           ),
